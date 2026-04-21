@@ -69,7 +69,7 @@ class UserLearningPlan(SQLModel, table=True):
     daily_tasks_rel: List["UserDailyTask"] = Relationship(back_populates="learning_plan_rel")
     word_progress_rel: List["UserWordProgress"] = Relationship(back_populates="learning_plan_rel")
     study_sessions_rel: List["UserStudySession"] = Relationship(back_populates="learning_plan_rel")
-
+    study_records_rel: List["UserStudyRecord"] = Relationship(back_populates="learning_plan_rel")
     # 计算方法
     def calculate_mastery_rate(self) -> float:
         """计算掌握率"""

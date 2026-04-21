@@ -7,7 +7,8 @@ import bcrypt
 import redis
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
-from jose import JWTError, jwt
+import jwt
+from jwt import PyJWTError as JWTError
 from fastapi import HTTPException, status
 
 # 从你的 config.py 导入设置

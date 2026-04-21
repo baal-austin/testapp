@@ -1,6 +1,9 @@
 # 贡献CRUD操作
 from sqlmodel import Session, select
 
+from app.models.user import UserContribution
+
+
 def get_contribution(db: Session, contribution_id: int):
     return db.exec(select(UserContribution).where(UserContribution.id == contribution_id)).first()
 

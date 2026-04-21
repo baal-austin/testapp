@@ -5,10 +5,10 @@ from typing import Any
 from sqlalchemy.orm import Session
 from sqlmodel import select, and_, desc, col
 
-from app.models.book import WordbookWordLink
+
 from app.schemas.study import *
 from app.models.word import Word, WordDefinition, WordPronunciation, Example
-
+from app.models.book import WordbookWordLink, Wordbook
 
 # ===== 学习计划管理 =====
 def create_learning_plan_by_id(db: Session, user_id: int, plan_data: LearningPlanCreate) -> UserLearningPlan:

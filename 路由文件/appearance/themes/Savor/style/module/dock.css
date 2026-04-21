@@ -1,0 +1,57 @@
+/* ————————————————————边栏———————————————————— */
+.dock{
+	background-color: var(--Sv-dock-background);
+	border: none!important;
+	&.dock--vertical{
+	width: 33px;
+	}
+	&#dockLeft{
+		.dock__item{
+			margin: 5px 0px 5px 5px;
+		}
+	}
+	&#dockRight{
+		.dock__item{
+			margin: 5px 5px 5px 0px;
+		}
+	}
+	&#dockBottom{
+		height: 33px;
+		padding: 0 38px;
+		.dock__item{
+			margin: 0px 5px 5px 0px;
+		}
+		.fn__flex-1{
+			flex: 0;
+		}
+	}
+	& .dock__item{
+		color: var(--Sv-dock-item-color);
+		padding:8px ;
+		border-radius: var(--Sv-dock-item-radius);
+		svg{
+			width: 12px;
+			height: 12px;
+		}
+		&:first-child{
+			margin-top: 0px!important;
+		}
+		&:hover{
+			color: var(--Sv-dock-item-hover-color);
+			background-color: var(--Sv-dock-item-active-background);
+		}
+		&.dock__item--activefocus{
+			background: var(--Sv-dock-item-activefocus-background)!important;
+			color:var(--Sv-dock--item--activefocus-color)!important;
+			box-shadow: var(--Sv-dock--item--activefocus-shadow);
+		}/*dock焦点状态*/
+	}
+	& .dock__item--active{
+		color: var(--Sv-dock-item-hover-color);
+		background-color: var(--Sv-dock-item-active-background);
+	}
+	& .dock__item--active:hover{
+		color: var(--Sv-dock-item-hover-color);
+		background-color: var(--Sv-dock-item-active-background-hover);
+	}
+}

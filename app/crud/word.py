@@ -2,7 +2,7 @@
 from sqlmodel import Session, select, or_
 from typing import List, Optional
 
-from app.models.word import Word, WordDefinition, Example, WordForm, WordPronunciation, Tag, WordTagLink
+from app.models.word import Word, WordDefinition, Example, WordForm, WordPronunciation, Tag, WordTagLink, ExampleWord
 from app.schemas.word import WordCreate, WordUpdate
 
 from sqlalchemy.exc import IntegrityError
@@ -22,23 +22,20 @@ def get_word_id_by_text(db: Session, word_text: str) -> Optional[int]:
 def create_word(db: Session, word_data: WordCreate) -> Optional[Word]:
     """
     创建新单词及其所有关联数据（定义、例句、形式、发音和标签）
-
-    参数:
-        db: 数据库会话
-        word_data: 包含单词及其关联数据的创建对象
-
-    返回:
-        成功时返回创建的Word对象，如果单词已存在则返回None
+    注意：例句的创建需要提供位置和释义信息，这里假设 word_data.examples
+    是一个列表，每个元素包含 sentence, translation, source, context, voice,
+    以及一个内部列表 words_in_example，每个元素包含 word_id, definition_id, start_pos, end_pos
+    但 word_id 可能是新单词的 id（尚未生成），所以需要先创建单词再关联。
+    我们采取先创建单词主体，然后处理所有关联。
     """
     try:
-        # 1. 检查单词是否已存在（不区分大小写）
+        # 1. 检查单词是否已存在
         normalized_word = word_data.word.lower()
         existing_word = db.execute(
             select(Word).where(Word.normalized_word == normalized_word)
         ).first()
-
         if existing_word:
-            return None  # 单词已存在
+            return None
 
         # 2. 创建单词主体
         db_word = Word(
@@ -52,9 +49,9 @@ def create_word(db: Session, word_data: WordCreate) -> Optional[Word]:
             description=word_data.description
         )
         db.add(db_word)
-        db.commit()  # 先提交以获取word_id
+        db.commit()  # 获取 word_id
 
-        # 3. 处理单词定义
+        # 3. 处理定义
         for definition in word_data.definitions:
             db_definition = WordDefinition(
                 word_id=db_word.id,
@@ -62,13 +59,45 @@ def create_word(db: Session, word_data: WordCreate) -> Optional[Word]:
             )
             db.add(db_definition)
 
-        # 4. 处理例句
-        for example in word_data.examples:
+        # 4. 处理例句（需要位置和释义信息）
+        for example_item in word_data.examples:
+            # 创建例句主体
             db_example = Example(
-                word_id=db_word.id,
-                **example.dict(exclude_unset=True)
+                sentence=example_item.sentence,
+                translation=example_item.translation,
+                source=example_item.source,
+                context=example_item.context,
+                voice=example_item.voice
             )
             db.add(db_example)
+            db.flush()  # 获取 example_id
+
+            # 为当前例句中的每个单词（包括当前单词）创建关联
+            for word_in_example in example_item.words_in_example:
+                # word_in_example 可能包含 word_id（如果关联的是已存在的单词）
+                # 或者是一个新单词（但我们这里暂不处理新单词，假设只关联当前创建的单词）
+                # 注意：如果例句中包含当前创建的单词，word_id 就是 db_word.id
+                # 如果包含其他已存在的单词，需要传入其 word_id
+                if word_in_example.word_id is None:
+                    # 如果未提供 word_id，尝试通过文本查找
+                    existing_word = get_word_by_word(db, word_in_example.word_text)
+                    if existing_word:
+                        word_id = existing_word.id
+                    else:
+                        # 这里可以递归创建新单词，但为避免复杂度，可抛出异常
+                        raise ValueError(f"单词 '{word_in_example.word_text}' 不存在")
+                else:
+                    word_id = word_in_example.word_id
+
+                # 创建关联
+                db_example_word = ExampleWord(
+                    example_id=db_example.id,
+                    word_id=word_id,
+                    definition_id=word_in_example.definition_id,
+                    start_pos=word_in_example.start_pos,
+                    end_pos=word_in_example.end_pos
+                )
+                db.add(db_example_word)
 
         # 5. 处理单词形式
         for form in word_data.forms:
@@ -86,32 +115,27 @@ def create_word(db: Session, word_data: WordCreate) -> Optional[Word]:
             )
             db.add(db_pronunciation)
 
-        # 7. 处理标签（先查找或创建标签，然后建立关联）
+        # 7. 处理标签
         for tag_data in word_data.tags:
-            # 查找标签 - 使用 scalars() 获取 Tag 对象
             stmt = select(Tag).where(Tag.name == tag_data.name)
             db_tag = db.scalars(stmt).first()
-
             if not db_tag:
-                # 创建新标签
                 db_tag = Tag(**tag_data.dict(exclude_unset=True))
                 db.add(db_tag)
-                db.commit()  # 提交以获取tag_id
-                db.refresh(db_tag)  # 刷新以获取id属性
-
-            # 创建关联关系
+                db.commit()
+                db.refresh(db_tag)
             db.add(WordTagLink(word_id=db_word.id, tag_id=db_tag.id))
 
         db.commit()
         db.refresh(db_word)
         return db_word
-
     except IntegrityError as e:
         db.rollback()
         raise ValueError(f"创建单词时发生完整性错误: {str(e)}")
     except Exception as e:
         db.rollback()
         raise RuntimeError(f"创建单词时发生错误: {str(e)}")
+
 
 def get_word(db: Session, word_id: int) -> Optional[Word]:
     """根据ID获取单词"""

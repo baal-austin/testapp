@@ -57,30 +57,76 @@ class AccentType(str, Enum):
 
 class RelationCategory(str, Enum):
     """关系类别枚举"""
-    SEMANTIC = "semantic"      # 语义关系
-    FORMAL = "formal"          # 形式关系
+    SEMANTIC = "semantic"  # 语义关系
+    FORMAL = "formal"  # 形式关系
+    MORPHEMIC = "morphemic"  # 词素关系（构词成分）
     MORPHOLOGICAL = "morphological"  # 形态关系
-    ASSOCIATIVE = "associative"  # 联想与用法关系
+    ASSOCIATIVE = "associative"  # 联想关系
 
 
 class RelationType(str, Enum):
     """单词关系类型枚举，定义单词之间的不同语义关系"""
-    SYNONYM = "synonym"  # 同义词
-    ANTONYM = "antonym"  # 反义词
-    HOMOPHONE = "homophone"  # 同音异义词
-    HOMONYM = "homonym"  # 同形异义词
-    DERIVATION = "derivation"  # 派生词
-    HOMOGLYPH = "homoglyph"  # 同形字
-    PARONYM = "paronym"  # 近音词
-    HYPERNYM = "hypernym"  # 上位词
-    HYPONYM = "hyponym"  # 下位词
-    HOLONYM = "holonym"  # 整体词
-    MERONYM = "meronym"  # 部分词
-    RELATED = "related"  # 相关词
-    VARIANT = "variant"  # 变体词
-    ABBREVIATION = "abbreviation"  # 缩写词
-    PLURAL = "plural"  # 复数形式
-    PAST_TENSE = "past_tense"  # 过去式
+    # ==================== 语义关系 (基于含义) ====================
+    # 核心语义关系
+    SYNONYM = "synonym"  # 同义词 happy↔ joyful（快乐的） big↔ large（大的）
+    ANTONYM = "antonym"  # 反义词 hot↔ cold（热/冷） up↔ down（上/下）
+    # PARENT_CHILD = "parent_child"  # 父子关系（类属层级） apple↔ fruit（苹果/水果）
+    # PART_WHOLE = "part_whole"  # 部分整体关系  wheel↔ car（轮子→汽车）
+    SISTER_TERM = "sister_term"  # 同位词/兄弟概念 apple↔ orange（苹果↔橙子） car↔ bus（汽车↔公交车）
+    HYPERNYM = "hypernym"  # 上位词/父类词 apple→ fruit（苹果→水果）car→ vehicle（汽车→车辆）
+    HYPONYM = "hyponym"  # 下位词/子类词 fruit→ apple（水果→苹果） animal→ dog（动物→狗）
+    HOLONYM = "holonym"  # 整体词 wheel→ car（轮子→汽车） chapter→ book（章节→书）
+    MERONYM = "meronym"  # 部分词 car→ wheel（汽车→轮子） book→ chapter（书→章节）
+
+    # ==================== 形式关系 (基于拼写、发音、构词法) ====================
+    # 音形关系
+    HOMOPHONE = "homophone"  # 同音异形异义词 see↔ sea（看见/大海） right↔ write（正确/写）
+    HOMONYM = "homonym"  # 同形异义词 see↔ sea（看见/大海）
+    PARONYM = "paronym"  # 近音词 affect↔ effect（影响/效果）accept↔ except（接受/除了）
+    SIMILAR = "similar"  # 拼写相似词 though↔ through（虽然/通过）quiet↔ quite（安静的/相当）
+
+    # 构词关系
+    ABBREVIATION = "abbreviation"  # 缩写/简写关系 advertisement↔ ad（广告） photograph↔ photo（照片）
+    VARIANT = "variant"  # 变体形式 color↔ colour（颜色，美式/英式） realize↔ realise（实现）
+
+    # ==================== 形态关系 (基于单词的语法形态变化) ====================
+    # 动词形态
+    BASE_FORM = "base_form"  # 基础形式(原形) goes（三单）→ go（原形）
+    THIRD_PERSON = "third_person"  # 第三人称单数现在时 go→ goes
+    PAST_TENSE = "past_tense"  # 过去式 go→ went
+    PAST_PARTICIPLE = "past_participle"  # 过去分词 go→ gone
+    PRESENT_PARTICIPLE = "present_participle"  # 现在分词/动名词 run→ running
+
+    # 名词形态
+    PLURAL_FORM = "plural_form"  # 复数形式 book→ books child→ children
+    POSSESSIVE = "possessive"  # 所有格形式 I → my, he → his, children→ children's ,teachers→ teachers'
+
+    # 形容词/副词形态
+    COMPARATIVE = "comparative"  # 比较级 big→ bigger
+    SUPERLATIVE = "superlative"  # 最高级 big→ biggest
+
+    ## 词性转换
+    TO_NOUN = "to_noun"  # 转换为名词 happy(adj.) → happiness(n.) 快乐→幸福感
+    TO_VERB = "to_verb"  # 转换为动词 simple(adj.) → simplify(v.) 简单→简化
+    TO_ADJ = "to_adj"  # 转换为形容词 beauty(n.) → beautiful(adj.) 美丽→美丽的
+    TO_ADV = "to_adv"  # 转换为副词 quick(adj.) → quickly(adv.) 快→快速地
+
+    DERIVATION = "derivation"  # 派生关系
+
+    # ==================== 词素关系 ====================
+    ROOT_RELATION = "root_relation"  # 词根关系 "passive" ↔ "pass"
+    SUFFIX_RELATION = "suffix_relation"  # 后缀关系 "-ive" ↔ "pass"
+    PREFIX_RELATION = "prefix_relation"  # 前缀关系 “un-" ↔ "unhappy"
+
+    # ==================== 联想与用法关系 (基于经验、语境和自定义) ====================
+    # 搭配关系
+    COLLOCATION = "collocation"  # 固定搭配 make + decision 习惯性共现
+    COMPOUND = "compound"  # 复合词关系(如"car door") 形成新词汇项
+    PHRASE_COMPOSITION = "phrase_composition"  # 短语构成关系 in front of 固定多词组合
+    IDIOM_COMPONENT = "idiom_component"  # 习语构成成分 kick the bucket 整体意义隐喻化
+    SEMANTIC_ROLE = "semantic_role"  # 角色关系 buyer- buy（施事关系），book- read（受事关系）
+    CONTEXTUAL = "contextual"  # 上下文关联关系 beach- sand，hospital- doctor
+
     CUSTOM = "custom"  # 自定义关系
 
 
@@ -137,7 +183,7 @@ class UserStatus(str, Enum):
 
 class AuthProvider(str, Enum):
     """认证提供商枚举"""
-    EMAIL = "email"      # 邮箱密码登录
-    PHONE = "phone"      # 手机号登录
-    WECHAT = "wechat"    # 微信登录
-    QQ = "qq"           # QQ登录
+    EMAIL = "email"  # 邮箱密码登录
+    PHONE = "phone"  # 手机号登录
+    WECHAT = "wechat"  # 微信登录
+    QQ = "qq"  # QQ登录

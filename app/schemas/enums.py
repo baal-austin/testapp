@@ -46,13 +46,62 @@ class AccentType(str, Enum):
 
 
 class RelationType(str, Enum):
-    SYNONYM = "synonym"
-    ANTONYM = "antonym"
-    DERIVATIVE = "derivative"
-    HYPERNYM = "hypernym"
-    HYPONYM = "hyponym"
-    HOLONYM = "holonym"
-    MERONYM = "meronym"
+    # ==================== 语义关系 (基于含义) ====================
+    ## 核心语义关系
+    SYNONYM = "synonym"  # 同义词
+    ANTONYM = "antonym"  # 反义词
+    HYPERNYM = "hypernym"  # 上位词/父类词
+    HYPONYM = "hyponym"  # 下位词/子类词
+    HOLONYM = "holonym"  # 整体词
+    MERONYM = "meronym"  # 部分词
+    SISTER_TERM = "sister_term"  # 同位词/兄弟概念
+
+    # ==================== 形式关系 (基于拼写、发音、构词法) ====================
+    ## 音形关系
+    HOMOPHONE = "homophone"  # 同音异形异义词
+    HOMONYM = "homonym"  # 同形异义词
+    PARONYM = "paronym"  # 近音词
+    SIMILAR = "similar"  # 拼写相似词
+
+    ## 构词关系
+    DERIVATION = "derivation"  # 派生关系
+    ABBREVIATION = "abbreviation"  # 缩写/简写关系
+    VARIANT = "variant"  # 变体形式
+
+    # ==================== 形态关系 (基于单词的语法形态变化) ====================
+    ## 动词形态
+    BASE_FORM = "base_form"  # 基础形式(原形)
+    THIRD_PERSON = "third_person"  # 第三人称单数现在时
+    PAST_TENSE = "past_tense"  # 过去式
+    PAST_PARTICIPLE = "past_participle"  # 过去分词
+    PRESENT_PARTICIPLE = "present_participle"  # 现在分词/动名词
+
+    ## 名词形态
+    PLURAL_FORM = "plural_form"  # 复数形式
+    POSSESSIVE = "possessive"  # 所有格形式
+
+    ## 形容词/副词形态
+    COMPARATIVE = "comparative"  # 比较级
+    SUPERLATIVE = "superlative"  # 最高级
+
+    ## 词性转换
+    TO_NOUN = "to_noun"  # 转换为名词
+    TO_VERB = "to_verb"  # 转换为动词
+    TO_ADJ = "to_adj"  # 转换为形容词
+    TO_ADV = "to_adv"  # 转换为副词
+
+    # ==================== 联想与用法关系 (基于经验、语境和自定义) ====================
+    ## 搭配关系
+    COLLOCATION = "collocation"  # 固定搭配
+    COMPOUND = "compound"  # 复合词关系(如"car door")
+    PHRASE_COMPOSITION = "phrase_composition"  # 短语构成关系
+
+    ## 扩展关系
+    RELATED = "related"  # 相关词(宽泛语境关联)
+    IDIOM_COMPONENT = "idiom_component"  # 习语构成成分
+    SEMANTIC_ROLE = "semantic_role"  # 语义角色关系
+    CONTEXTUAL = "contextual"  # 上下文关联关系
+    CUSTOM = "custom"  # 自定义关系
 
 
 class PartOfSpeechAbbr(str, Enum):

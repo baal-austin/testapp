@@ -18,6 +18,35 @@ if TYPE_CHECKING:
     from .study import UserStudyRecord, UserWordProgress
 
 
+class ExampleWord(SQLModel, table=True):
+    """例句-单词关联表，记录单词在例句中的出现位置及使用的释义"""
+    __tablename__ = "example_words"
+
+    id: Optional[int] = Field(default=None, primary_key=True, description="关联记录唯一标识符")
+    example_id: int = Field(
+        foreign_key="examples.id", nullable=False, description="例句ID"
+    )
+    word_id: int = Field(
+        foreign_key="words.id", nullable=False, description="单词ID"
+    )
+    definition_id: int = Field(
+        foreign_key="word_definitions.id", nullable=False, description="该单词在此例句中使用的释义ID"
+    )
+    start_pos: int = Field(ge=0, description="单词在例句文本中的起始字符索引")
+    end_pos: int = Field(ge=0, description="单词在例句文本中的结束字符索引（不包含）")
+
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="创建时间")
+    updated_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        sa_column_kwargs={"onupdate": datetime.utcnow},
+        description="更新时间"
+    )
+
+    # 关系
+    example_rel: "Example" = Relationship(back_populates="words_rel")
+    word_rel: "Word" = Relationship(back_populates="example_words_rel")
+    definition_rel: "WordDefinition" = Relationship(back_populates="example_words_rel")
+
 class WordTagLink(SQLModel, table=True):
     """单词标签关联表"""
     __tablename__ = "word_tags_link"
@@ -50,6 +79,12 @@ class Word(SQLModel, table=True):
     word: str = Field(max_length=100, unique=True, nullable=False, index=True, description="单词原文")
     normalized_word: str = Field(max_length=100, index=True, description="标准化后的单词(小写形式，便于搜索)")
     length: int = Field(ge=1, description="单词长度(字符数)")
+    definition_cn: str = Field(max_length=100, description="简单中文释义")
+    definition_en: str = Field(max_length=100, description="简单英文释义")
+    # pronunciation_us: str = Field(description="美式发音")
+    # pronunciation_uk: str = Field(description="英式发音")
+    # soundmark_us: str = Field(description="美式音标")
+    # soundmark_uk: str = Field(description="英式英标")
 
     # 统计和元数据
     frequency_rank: Optional[int] = Field(default=None, ge=1, description="词频排名，数值越小表示越常见")
@@ -85,13 +120,17 @@ class Word(SQLModel, table=True):
             "lazy": "selectin"
         }
     )
-    examples_rel: List["Example"] = Relationship(
+    # 新增 example_words_rel
+    example_words_rel: List["ExampleWord"] = Relationship(
         back_populates="word_rel",
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "lazy": "selectin"
-        }
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
     )
+    # 为了方便直接获取例句，可以添加 property
+    @property
+    def examples(self) -> List["Example"]:
+        """获取该单词关联的所有例句（通过 ExampleWord）"""
+        return [ew.example_rel for ew in self.example_words_rel]
+
     pronunciations_rel: List["WordPronunciation"] = Relationship(
         back_populates="word_rel",
         sa_relationship_kwargs={
@@ -223,12 +262,12 @@ class Example(SQLModel, table=True):
     __tablename__ = "examples"
 
     id: Optional[int] = Field(default=None, primary_key=True, description="例句唯一标识符")
-    word_id: int = Field(foreign_key="words.id", description="关联的单词ID")
+
     sentence: str = Field(max_length=8000, nullable=False, description="例句原文")
     translation: str = Field(max_length=8000, nullable=False, description="例句翻译")
     source: Optional[str] = Field(default=None, description="例句来源(如词典名称、文学作品等)")
     context: Optional[str] = Field(default=None, description="例句上下文信息")
-
+    voice: str = Field(max_length=100, nullable=False, description="语音")
     # 时间戳字段
     created_at: datetime = Field(default_factory=datetime.utcnow, description="创建时间")
     updated_at: datetime = Field(
@@ -236,9 +275,15 @@ class Example(SQLModel, table=True):
         sa_column_kwargs={"onupdate": datetime.utcnow},
         description="更新时间"
     )
-
-    # 定义关系
-    word_rel: "Word" = Relationship(back_populates="examples_rel")
+    # 关系
+    words_rel: List["ExampleWord"] = Relationship(
+        back_populates="example_rel",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    @property
+    def word_list(self) -> List["Word"]:
+        """获取例句中的所有单词"""
+        return [ew.word_rel for ew in self.words_rel]
 
 
 class WordForm(SQLModel, table=True):
@@ -267,6 +312,7 @@ class WordPronunciation(SQLModel, table=True):
     __tablename__ = "word_pronunciations"
 
     id: Optional[int] = Field(default=None, primary_key=True, description="发音记录唯一标识符")
+
     word_id: int = Field(foreign_key="words.id", description="关联的单词ID")
     accent: AccentType = Field(description="发音口音")
     audio_url: str = Field(unique=True, nullable=False, description="发音音频文件URL")

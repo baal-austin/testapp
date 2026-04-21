@@ -3,7 +3,7 @@ from sqlmodel import Session, select, delete
 from typing import List, Optional
 
 from app.models.enums import TagType
-from app.models.word import Word, WordDefinition, Example, WordForm, WordPronunciation, Tag, WordTagLink
+from app.models.word import Word, WordDefinition, Example, WordForm, WordPronunciation, Tag, WordTagLink, ExampleWord
 
 
 def get_word_id_by_text(db: Session, word_text: str) -> Optional[int]:
@@ -377,3 +377,158 @@ def get_words_by_tag_name(db: Session, tag_name: str) -> List[Word]:
     """通过标签名获取所有相关单词"""
     statement = select(Word).join(WordTagLink).join(Tag).where(Tag.name == tag_name)
     return db.execute(statement).scalars().all()
+
+
+# ---------- 单词-例句关联操作 ----------
+def add_word_to_example(
+    db: Session,
+    example_id: int,
+    word_id: int,
+    definition_id: int,
+    start_pos: int,
+    end_pos: int
+) -> ExampleWord:
+    """将单词关联到例句，指定释义和位置"""
+    # 校验存在性
+    example = db.get(Example, example_id)
+    word = db.get(Word, word_id)
+    definition = db.get(WordDefinition, definition_id)
+    if not all([example, word, definition]):
+        raise ValueError("例句、单词或释义不存在")
+
+    # 创建关联记录
+    link = ExampleWord(
+        example_id=example_id,
+        word_id=word_id,
+        definition_id=definition_id,
+        start_pos=start_pos,
+        end_pos=end_pos
+    )
+    db.add(link)
+    db.commit()
+    db.refresh(link)
+    return link
+
+
+def remove_word_from_example(db: Session, link_id: int) -> bool:
+    """移除单词与例句的关联"""
+    link = db.get(ExampleWord, link_id)
+    if not link:
+        return False
+    db.delete(link)
+    db.commit()
+    return True
+
+
+def update_word_position_in_example(
+    db: Session,
+    link_id: int,
+    start_pos: int,
+    end_pos: int
+) -> Optional[ExampleWord]:
+    """更新单词在例句中的位置"""
+    link = db.get(ExampleWord, link_id)
+    if not link:
+        return None
+    link.start_pos = start_pos
+    link.end_pos = end_pos
+    db.add(link)
+    db.commit()
+    db.refresh(link)
+    return link
+
+
+# ---------- 查询操作 ----------
+def get_examples_by_word(
+    db: Session,
+    word_id: int,
+    skip: int = 0,
+    limit: int = 100
+) -> List[Example]:
+    """获取单词的所有例句（不包含位置和释义信息）"""
+    stmt = (
+        select(Example)
+        .join(ExampleWord, Example.id == ExampleWord.example_id)
+        .where(ExampleWord.word_id == word_id)
+        .offset(skip)
+        .limit(limit)
+    )
+    return db.execute(stmt).all()
+
+
+def get_examples_with_word_info(
+    db: Session,
+    word_id: int,
+    skip: int = 0,
+    limit: int = 100
+) -> List[dict]:
+    """
+    获取单词的所有例句，并包含单词在例句中的位置及使用的释义。
+    返回格式: [
+        {
+            "example": Example对象,
+            "start_pos": int,
+            "end_pos": int,
+            "definition": WordDefinition对象
+        },
+        ...
+    ]
+    """
+    stmt = (
+        select(Example, ExampleWord, WordDefinition)
+        .join(ExampleWord, Example.id == ExampleWord.example_id)
+        .join(WordDefinition, ExampleWord.definition_id == WordDefinition.id)
+        .where(ExampleWord.word_id == word_id)
+        .offset(skip)
+        .limit(limit)
+    )
+    results = db.execute(stmt).all()
+    return [
+        {
+            "example": ex,
+            "start_pos": ew.start_pos,
+            "end_pos": ew.end_pos,
+            "definition": wd
+        }
+        for ex, ew, wd in results
+    ]
+
+
+def get_examples_by_definition(
+    db: Session,
+    definition_id: int,
+    skip: int = 0,
+    limit: int = 100
+) -> List[Example]:
+    """获取使用了指定释义的所有例句"""
+    stmt = (
+        select(Example)
+        .join(ExampleWord, Example.id == ExampleWord.example_id)
+        .where(ExampleWord.definition_id == definition_id)
+        .offset(skip)
+        .limit(limit)
+    )
+    return db.execute(stmt).all()
+
+
+def get_words_in_example(
+    db: Session,
+    example_id: int
+) -> List[dict]:
+    """获取例句中的所有单词及其位置和释义"""
+    stmt = (
+        select(Word, ExampleWord, WordDefinition)
+        .join(ExampleWord, Word.id == ExampleWord.word_id)
+        .join(WordDefinition, ExampleWord.definition_id == WordDefinition.id)
+        .where(ExampleWord.example_id == example_id)
+    )
+    results = db.execute(stmt).all()
+    return [
+        {
+            "word": w,
+            "start_pos": ew.start_pos,
+            "end_pos": ew.end_pos,
+            "definition": wd
+        }
+        for w, ew, wd in results
+    ]

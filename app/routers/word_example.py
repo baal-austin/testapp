@@ -7,22 +7,40 @@ from app.models.user import User
 from app.schemas.word_relation import ExampleCreate, ExampleRead, ExampleUpdate
 from app.crud.word_relation import (
     get_word_examples, get_example_by_id, create_word_example,
-    update_word_example, delete_word_example, get_word_id_by_text, is_exist_example
+    update_word_example, delete_word_example, get_word_id_by_text, is_exist_example, get_examples_by_word
 )
 
 word_example_router = APIRouter(prefix="/words/{word_text}/examples", tags=["word examples"])
 
 
-@word_example_router.get("/", response_model=List[ExampleRead])
-def read_word_examples(word_text: str, db: Session = Depends(get_db)):
-    """获取单词的所有例句"""
+# ========== 辅助函数 ==========
+def get_word_id_or_404(db: Session, word_text: str) -> int:
     word_id = get_word_id_by_text(db, word_text)
     if not word_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Word not found"
         )
-    examples = get_word_examples(db, word_id)
+    return word_id
+
+
+def check_example_word_link(db, example_id, word_id):
+    pass
+
+
+def check_example_word_link_or_404(db: Session, example_id: int, word_id: int):
+    if not check_example_word_link(db, example_id, word_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Example not found for this word"
+        )
+
+# ========== 基础例句操作 ==========
+@word_example_router.get("/", response_model=List[ExampleRead])
+def read_word_examples(word_text: str, db: Session = Depends(get_db)):
+    """获取单词的所有例句（不含位置和释义信息）"""
+    word_id = get_word_id_or_404(db, word_text)
+    examples = get_examples_by_word(db, word_id)
     return examples
 
 

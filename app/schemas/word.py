@@ -21,6 +21,8 @@ class WordDefinitionBase(BaseModel):
 class ExampleBase(BaseModel):
     sentence: str
     translation: str
+    start_pos: int
+    end_pos: int
     source: Optional[str] = None
     context: Optional[str] = None
 

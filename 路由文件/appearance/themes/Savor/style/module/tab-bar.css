@@ -1,0 +1,145 @@
+/* ———————————————————页签———————————————————— */
+.layout__center .fn__flex-column>.fn__flex>.layout-tab-bar{
+    background-color: transparent;
+    border: none;
+    height: 40px;
+    margin-bottom: -7px;
+    /*overflow: visible;这个不能加*/
+    .item:not(.item--readonly){
+        min-height: 28px;
+        border-radius: var(--Sv-tab-bar-item-radius);
+        background-color: var(--Sv-tab-bar-item-background);
+        margin-bottom: 12px;
+        padding-right: 5px;
+        overflow: unset !important;
+        box-shadow: -6px 0 0 0 var(--Sv-dock-background) inset;
+        &:not(.item--focus)::before {
+            content: "" ;
+            display: inline-block ;
+            width: 20px;
+            height: 20px;
+            background-color: transparent ;
+            border-radius: 2px;
+            --Sv-tab-bar-readonly-shadow: 4px -2px 0 var(--Sv-dock-background);
+            position: absolute;
+            top: 0px;
+            left: -24px;
+            pointer-events: none;
+            }
+        &:not(.item--focus) .item__text {
+            letter-spacing: 0.1px; 
+        }
+        &:last-child{
+            box-shadow: -6px 0 0 0 var(--Sv-dock-background) inset;
+        }
+        & .item__icon{
+            padding: 3px 0 3px 7px;
+            &>img,&>svg{
+                height: 15px;
+                width: 15px;
+            }
+        }
+        &:hover{
+            background-color: var(--Sv-tab-bar-item-background-hover); 
+        }
+        &.item--focus{
+            background-color: var(--Sv-tab-bar-item-background-focus);
+            border-radius: var(--Sv-tab-bar-item--focus-radius);
+            margin-bottom: 7px;
+            padding: 0px 5px 5px 0px;
+            &:before{
+                left: -20px !important;
+                bottom: 0px !important;
+                clip-path: inset(50% -5px -7px 50%);
+            }
+            &:after{
+                right: -14px;
+                bottom: 0px !important;
+                clip-path: inset(50% 50% -5px -7px);
+            }
+            &:before,&:after{
+                content: "";
+                display: block;
+                position: absolute;
+                top: unset !important;
+                background-color: rgba(0, 0, 0, 0);
+                width: 20px;
+                height: 20px !important;
+                border-radius: var(--Sv-tab-bar-item-radius);
+                border: none !important;
+                z-index: 2;
+                box-shadow:  0 0 0 24px var(--Sv-tab-bar-item-background-focus);
+            }
+                & .item__text {
+                    font-weight: 700;
+                }
+
+            }
+        }
+    &.layout-tab-bar--readonly{
+        background-color: var(--Sv-dock-background);
+        border-radius: var(--Sv-tab-bar-item-radius);
+        height: 33px;
+        padding-left: 6px;
+        margin-left: -6px;
+        overflow: visible;
+        z-index: 2;
+
+        &::before {
+        content: "" ;
+        display: inline-block ;
+        width: 20px;
+        height: 20px;
+        background-color: transparent ;
+        border-radius: var(--Sv-tab-bar-item-radius);
+        box-shadow: var(--Sv-tab-bar-readonly-shadow);
+        position: absolute;
+        top: 0px;
+        left: -20px;
+        pointer-events: none;
+        }
+    }
+    .item--readonly {
+        min-height: 28px;
+        padding: 0;
+        .block__icon{
+        background-color: var(--Sv-tab-bar-item-background);
+        padding: 7px;
+        border-radius: var(--Sv-tab-bar-item-radius);
+        &:hover{
+            background-color:var(--Sv-tab-bar-item-background-focus);
+            }
+        }
+    }
+    .item--pin{
+        min-width: 30px;
+        & .item__icon{
+            padding:0px 6px;
+        }
+        & .item__graphic{
+            padding:4px;
+        }
+        &:nth-child(4n-3){
+            background-color:var(--b3-card-error-background);
+        }
+        &:nth-child(4n-2){
+            background-color:var(--b3-card-warning-background);
+        }
+        &:nth-child(4n-1){
+            background-color:var(--b3-card-info-background);
+        }
+        &:nth-child(4n){
+            background-color:var(--b3-card-success-background);
+        }
+    }
+    .item__close{
+        padding: 5px 6px 5px 0;
+        svg {
+            border-radius: 3px;
+        }
+    }
+}
+.layout-tab-bars--drag>.layout-tab-bar{
+	background-color: var(--b3-theme-primary-lightest)!important;
+}
+

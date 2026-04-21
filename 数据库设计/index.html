@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh_CN" data-theme-mode="light" data-light-theme="Savor" data-dark-theme="midnight">
+<head>
+    <base href="">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" id="baseStyle" href="stage/build/export/base.css?v=3.5.0"/>
+    <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="appearance/themes/Savor/theme.css?v=3.5.0"/>
+    <script src="stage/protyle/js/protyle-html.js?v=3.5.0"></script>
+    <link rel="stylesheet" type="text/css" id="themeStyle" href="appearance/themes/Savor/theme.css?3.5.0"/>
+    <title>数据库设计</title>
+    <!-- Exported by SiYuan v3.5.0 -->
+    <style>
+        body {font-family: var(--b3-font-family);background-color: var(--b3-theme-background);color: var(--b3-theme-on-background)}
+        @font-face {
+  font-family: "Emojis Additional";
+  src: url(appearance/fonts/Noto-COLRv1-2.047/Noto-COLRv1.woff2) format("woff2");
+  unicode-range: U+1fae9, U+1fac6, U+1fabe, U+1fadc, U+e50a, U+1fa89, U+1fadf, U+1f1e6-1f1ff, U+1f3f4, U+e0067, U+e0062,
+  U+e0065, U+e006e, U+e007f, U+e0073, U+e0063, U+e0074, U+e0077, U+e006c;
+  size-adjust: 85%;
+}
+@font-face {
+  font-family: "Emojis Reset";
+  src: local("Segoe UI Emoji"),
+  local("Segoe UI Symbol");
+  unicode-range: U+263a, U+21a9, U+2642, U+303d, U+2197, U+2198, U+2199, U+2196, U+2195, U+2194, U+2660, U+2665, U+2666, 
+  U+2663, U+3030, U+21aa, U+25b6, U+25c0, U+2640, U+203c, U+a9, U+ae, U+2122;
+  size-adjust: 85%;
+}
+@font-face {
+  font-family: "Emojis";
+  src: local("Segoe UI Emoji"),
+  local("Segoe UI Symbol");
+  size-adjust: 85%;
+}
+:root { --b3-font-size-editor: 16px }
+.b3-typography code:not(.hljs), .protyle-wysiwyg span[data-type~=code] { font-variant-ligatures: none }
+        
+        
+    </style>
+    
+</head>
+<body>
+<div class="b3-typography" 
+style="max-width: 800px;margin: 0 auto;" id="preview"><h1 id="数据库设计" title="数据库设计" updated="20250921231246">数据库设计</h1>
+<h1 id="20250913141332-zwbdth3" updated="20250913141530">数据库表功能与属性详细描述</h1>
+<p id="20250913141506-te7t9d6" updated="20250913141530">​<span contenteditable="false" data-type="img" class="img"><span> </span><span style="width: 745px;"><span class="protyle-action protyle-icons"><span class="protyle-icon protyle-icon--only"><svg class="svg"><use xlink:href="#iconMore"></use></svg></span></span><img src="assets/deepseek_mermaid_20250913_210575-20250913141506-hs2i1fs.png" data-src="assets/deepseek_mermaid_20250913_210575-20250913141506-hs2i1fs.png" alt="deepseek_mermaid_20250913_210575" /><span class="protyle-action__drag"></span><span class="protyle-action__title"><span></span></span></span><span> </span></span>​</p>
+<p id="20250913141404-riv5dof" updated="20250913141404">核心部分：</p>
+<ol id="20250913141404-xphanph" updated="20250913141404">
+<li updated="20250913141404" id="20250913141404-3fsoz9z">
+<p id="20250913141404-ntsgzzp" updated="20250913141404">​<span data-type="strong">用户管理</span>​：用户基本信息、设置和学习统计</p>
+</li>
+<li updated="20250913141404" id="20250913141404-yn23jsm">
+<p id="20250913141404-grt6fav" updated="20250913141404">​<span data-type="strong">单词管理</span>​：单词核心信息、释义、例句、词形变化和发音</p>
+</li>
+<li id="20250913141404-4urd134" updated="20250913141404">
+<p id="20250913141404-oh86qfm" updated="20250913141404">​<span data-type="strong">分类与标签</span>​：单词的分类和标签系统</p>
+</li>
+<li id="20250913141404-ts27au1" updated="20250913141404">
+<p updated="20250913141404" id="20250913141404-76u40k7">​<span data-type="strong">单词关系</span>​：单词间的多种关系类型</p>
+</li>
+<li id="20250913141404-qn998b9" updated="20250913141404">
+<p id="20250913141404-u4bngb9" updated="20250913141404">​<span data-type="strong">学习管理</span>​：单词列表、学习计划、进度跟踪和复习计划</p>
+</li>
+<li id="20250913141404-6t79wmw" updated="20250913141404">
+<p id="20250913141404-tufdwt1" updated="20250913141404">​<span data-type="strong">测试评估</span>​：测验系统及相关结果跟踪</p>
+</li>
+<li updated="20250913141404" id="20250913141404-37lpfoq">
+<p id="20250913141404-xfn3f39" updated="20250913141404">​<span data-type="strong">用户贡献</span>​：用户提交的内容修改建议</p>
+</li>
+</ol>
+<h2 id="20250913141332-8e6p7ou" updated="20250921223418">用户相关表</h2>
+<h3 id="20250913141332-gaayuvh" updated="20250921223418">1. User（用户表）</h3>
+<p id="20250913141332-f74out9" updated="20250913141332">​<span data-type="strong">功能</span>​：存储系统用户的基本信息  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" updated="20250921223418" id="20250913141332-qbr553z">
+<li id="20250913141332-59qh62v" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-xqnq95q">​<span data-type="code">id</span>：主键，用户唯一标识符</p>
+</li>
+<li updated="20250913141332" id="20250913141332-5uayra6">
+<p id="20250913141332-nnl4375" updated="20250913141332">​<span data-type="code">username</span>：用户名，用于登录和显示</p>
+</li>
+<li id="20250913141332-3cpstzi" updated="20250913141332">
+<p id="20250913141332-1u7o4dy" updated="20250913141332">​<span data-type="code">email</span>：用户邮箱，用于登录和通知</p>
+</li>
+<li id="20250921223258-wu273xg" updated="20250921223258">
+<p updated="20250921223350" id="20250921223258-p1cm8bk">​<span data-type="code">phone</span>：电话号码，用于登录和通知</p>
+</li>
+<li id="20250921223336-02u48ci" updated="20250921223415">
+<p id="20250921223336-9rwykb7" updated="20250921223415">​<span data-type="code">qq</span>：QQ号，用于登录和通知</p>
+</li>
+<li id="20250921223354-3kinc0c" updated="20250921223418">
+<p updated="20250921223418" id="20250921223354-td7v6zc">​<span data-type="code">wx</span>：微信号，用于登录和通知</p>
+</li>
+<li id="20250913141332-vztiugf" updated="20250913141332">
+<p id="20250913141332-9yo4m87" updated="20250913141332">​<span data-type="code">hashed_password</span>：加密后的密码</p>
+</li>
+<li id="20250913141332-wjvpi78" updated="20250913141332">
+<p id="20250913141332-36pog39" updated="20250913141332">​<span data-type="code">display_name</span>：用户显示名称，可不同于用户名</p>
+</li>
+<li id="20250913141332-biar65r" updated="20250913141332">
+<p id="20250913141332-w57flqp" updated="20250913141332">​<span data-type="code">avatar</span>：用户头像URL或路径</p>
+</li>
+<li id="20250913141332-6uc5gry" updated="20250913141332">
+<p id="20250913141332-3iwdick" updated="20250913141332">​<span data-type="code">created_at</span>：账户创建时间</p>
+</li>
+<li id="20250913141332-gl2fsg2" updated="20250913141332">
+<p id="20250913141332-05e7jw1" updated="20250913141332">​<span data-type="code">last_login</span>：最后登录时间</p>
+</li>
+<li id="20250913141332-u2ahoyg" updated="20250913141332">
+<p id="20250913141332-58r5mpg" updated="20250913141332">​<span data-type="code">is_active</span>：账户是否激活</p>
+</li>
+<li updated="20250913141332" id="20250913141332-u9z3e8b">
+<p id="20250913141332-pxi639p" updated="20250913141332">​<span data-type="code">is_premium</span>：是否为高级会员</p>
+</li>
+<li id="20250913141332-dl082tk" updated="20250913141332">
+<p id="20250913141332-0plcpf2" updated="20250913141332">​<span data-type="code">streak_days</span>：连续学习天数</p>
+</li>
+<li id="20250913141332-psvb29d" updated="20250913141332">
+<p id="20250913141332-wxj24xj" updated="20250913141332">​<span data-type="code">total_words_learned</span>：已学习的单词总数</p>
+</li>
+</ul>
+<h3 id="20250913141332-1c9equk" updated="20250921230351">2. UserSetting（用户设置表）</h3>
+<p id="20250913141332-3gn02ha" updated="20250913141332">​<span data-type="strong">功能</span>​：存储用户的个性化设置  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-v5kd4ra" updated="20250921230351">
+<li id="20250913141332-tamqq8e" updated="20250913141332">
+<p id="20250913141332-m08dvk0" updated="20250913141332">​<span data-type="code">id</span>：主键，设置唯一标识符</p>
+</li>
+<li id="20250913141332-48cvs8d" updated="20250913141332">
+<p id="20250913141332-bhbkkcb" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-hr3egg3" updated="20250913141332">
+<p id="20250913141332-nv3i3m2" updated="20250921230331">​<span data-type="code">study_daily_goal</span>：每日学习目标单词数量</p>
+</li>
+<li id="20250921230335-2xj0f5c" updated="20250921230351">
+<p updated="20250921230351" id="20250921230335-2ysjaae">​<span data-type="code">review_daily_goal</span>：每日复习目标单词数量</p>
+</li>
+<li id="20250913141332-kytb3lf" updated="20250913141332">
+<p id="20250913141332-yr598gw" updated="20250913141332">​<span data-type="code">notification_enabled</span>：是否启用通知</p>
+</li>
+<li id="20250913141332-n5t3w09" updated="20250913141332">
+<p id="20250913141332-60jdsur" updated="20250913141332">​<span data-type="code">notification_time</span>：每日提醒时间</p>
+</li>
+<li id="20250913141332-dr49rqs" updated="20250913141332">
+<p id="20250913141332-4v0ss8u" updated="20250913141332">​<span data-type="code">study_reminders</span>：是否启用学习提醒</p>
+</li>
+<li id="20250913141332-qlg4qtc" updated="20250913141332">
+<p id="20250913141332-635ff3k" updated="20250913141332">​<span data-type="code">language</span>：界面语言代码</p>
+</li>
+<li id="20250913141332-hnm2atn" updated="20250913141332">
+<p id="20250913141332-plimsnz" updated="20250913141332">​<span data-type="code">pronunciation_accent</span>：偏好发音口音(us/uk等)</p>
+</li>
+</ul>
+<h3 id="20250913141332-g15jchp" updated="20250913141332">3. UserStatistic（用户统计表）</h3>
+<p id="20250913141332-bg6x34r" updated="20250913141332">​<span data-type="strong">功能</span>​：记录用户每日学习统计数据  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-bq721ds" updated="20250913141332">
+<li id="20250913141332-hamkj4b" updated="20250913141332">
+<p id="20250913141332-md5ikhj" updated="20250913141332">​<span data-type="code">id</span>：主键，统计记录唯一标识符</p>
+</li>
+<li updated="20250913141332" id="20250913141332-lifha8z">
+<p id="20250913141332-2sl8lur" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li updated="20250913141332" id="20250913141332-aqm2o8a">
+<p id="20250913141332-trqgfnb" updated="20250913141332">​<span data-type="code">date</span>：统计日期</p>
+</li>
+<li id="20250913141332-u1blm47" updated="20250913141332">
+<p id="20250913141332-dm4ks81" updated="20250913141332">​<span data-type="code">words_studied</span>：当日学习的单词数量</p>
+</li>
+<li id="20250913141332-rchdsis" updated="20250913141332">
+<p id="20250913141332-lq1slzk" updated="20250913141332">​<span data-type="code">time_studied</span>：当日学习时长(分钟)</p>
+</li>
+<li updated="20250913141332" id="20250913141332-cbk7v63">
+<p id="20250913141332-okmo594" updated="20250913141332">​<span data-type="code">correct_answers</span>：当日正确答题数量</p>
+</li>
+<li id="20250913141332-dp5lwrj" updated="20250913141332">
+<p id="20250913141332-5gqcx4r" updated="20250913141332">​<span data-type="code">incorrect_answers</span>：当日错误答题数量</p>
+</li>
+</ul>
+<h2 id="20250913141332-yndrafz" updated="20250922134020">单词管理相关表</h2>
+<h3 id="20250913141332-g8n3ppf" updated="20250922134020">4. Word（单词表）</h3>
+<p id="20250913141332-3l3bh1v" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词核心信息  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-b6z5xet" updated="20250922134020">
+<li id="20250913141332-q1d4ztz" updated="20250913141332">
+<p id="20250913141332-lg8udzw" updated="20250913141332">​<span data-type="code">id</span>：主键，单词唯一标识符</p>
+</li>
+<li updated="20250913141332" id="20250913141332-demxqur">
+<p updated="20250913141332" id="20250913141332-h9ry658">​<span data-type="code">word</span>：单词原文</p>
+</li>
+<li updated="20250913141332" id="20250913141332-w2e96sz">
+<p id="20250913141332-t6slv8s" updated="20250913141332">​<span data-type="code">normalized_word</span>：标准化后的单词(小写形式，便于搜索)</p>
+</li>
+<li id="20250913141332-rnqzp64" updated="20250913141332">
+<p id="20250913141332-bx9ditu" updated="20250913141332">​<span data-type="code">length</span>：单词长度(字符数)</p>
+</li>
+<li id="20250913141332-60491sk" updated="20250913141332">
+<p id="20250913141332-udvh729" updated="20250913141332">​<span data-type="code">frequency_rank</span>：词频排名，数值越小表示越常见</p>
+</li>
+<li id="20250913141332-xlww24u" updated="20250921223951">
+<p id="20250913141332-40x4agv" updated="20250921223951">​<span data-type="code">difficulty_level</span>：难度等级(1-5)</p>
+</li>
+<li id="20250913141332-cb6nq7y" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-q76leyx">​<span data-type="code">is_common</span>：是否为常用词</p>
+</li>
+<li id="20250913141332-an3qsqp" updated="20250913141332">
+<p id="20250913141332-6523ga4" updated="20250913141332">​<span data-type="code">tags_json</span>：单词标签的JSON字符串</p>
+</li>
+<li id="20250913141332-ufer4y3" updated="20250913141332">
+<p id="20250913141332-d0g3pfl" updated="20250913141332">​<span data-type="code">etymology</span>：词源信息</p>
+</li>
+<li id="20250913141332-wofn32x" updated="20250913141332">
+<p id="20250913141332-131fc7d" updated="20250913141332">​<span data-type="code">created_at</span>：单词添加时间</p>
+</li>
+<li id="20250913141332-2o4s5c7" updated="20250922134020">
+<p id="20250913141332-elgl9nb" updated="20250922134020">​<span data-type="code">updated_at</span>：单词更新时间</p>
+</li>
+<li id="20250913141332-rjlayv4" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-lafezdi">​<span data-type="code">description</span>：单词描述</p>
+</li>
+<li id="20250921231547-yhob92m" updated="20250921231554">
+<p id="20250921231547-7ek4hb7" updated="20250921231554">audio_url：发音音频链接</p>
+</li>
+<li updated="20250922133617" id="20250922133612-u10r2qr">
+<p id="20250922133612-0259cu6" updated="20250922133617">浏览数</p>
+</li>
+</ul>
+<h3 id="20250913141332-xxdfcro" updated="20250913141332">5. WordDefinition（单词释义表）</h3>
+<p id="20250913141332-9ugexk3" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词的多种释义  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-tc8j5tq" updated="20250913141332">
+<li updated="20250913141332" id="20250913141332-uco3eyq">
+<p id="20250913141332-aclngy5" updated="20250913141332">​<span data-type="code">id</span>：主键，释义唯一标识符</p>
+</li>
+<li id="20250913141332-0zl3b2o" updated="20250913141332">
+<p id="20250913141332-jtdi4uq" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li id="20250913141332-z6wy1a4" updated="20250913141332">
+<p id="20250913141332-jyafkod" updated="20250913141332">​<span data-type="code">part_of_speech</span>：词性</p>
+</li>
+<li id="20250913141332-h69cffz" updated="20250913141332">
+<p id="20250913141332-jyi9630" updated="20250913141332">​<span data-type="code">definition</span>：英文释义</p>
+</li>
+<li id="20250913141332-8s5pff8" updated="20250913141332">
+<p id="20250913141332-yoh1gc1" updated="20250913141332">​<span data-type="code">definition_cn</span>：中文释义</p>
+</li>
+<li id="20250913141332-plx906c" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-d193jao">​<span data-type="code">order</span>：释义显示顺序(同一单词可能有多个释义)</p>
+</li>
+<li id="20250913141332-o3xzufc" updated="20250913141332">
+<p id="20250913141332-pxh476x" updated="20250913141332">​<span data-type="code">domains_json</span>：适用领域的JSON字符串(如:医学,法律,计算机等)</p>
+</li>
+<li id="20250913141332-eigz7y6" updated="20250913141332">
+<p id="20250913141332-wm320fv" updated="20250913141332">​<span data-type="code">example_usage</span>：用法示例</p>
+</li>
+</ul>
+<h3 id="20250913141332-eeag6pc" updated="20250921231246">6. Example（例句表）</h3>
+<p id="20250913141332-ww4jorn" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词的例句  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-ku1tmty" updated="20250921231246">
+<li id="20250913141332-w0lo849" updated="20250913141332">
+<p id="20250913141332-3zhu9ua" updated="20250921231213">​<span data-type="code">id</span>：主键，例句唯一标识符，例句ID</p>
+</li>
+<li id="20250913141332-r3kbwga" updated="20250913141332">
+<p id="20250913141332-oen63qe" updated="20250913141332">​<span data-type="code">sentence</span>：例句原文</p>
+</li>
+<li id="20250913141332-xi2nnex" updated="20250913141332">
+<p id="20250913141332-hdol198" updated="20250913141332">​<span data-type="code">translation</span>：例句翻译</p>
+</li>
+<li id="20250913141332-qw8ixeh" updated="20250913141332">
+<p id="20250913141332-gleudpm" updated="20250913141332">​<span data-type="code">source</span>：例句来源(如词典名称、文学作品等)</p>
+</li>
+<li id="20250913141332-wevq3hs" updated="20250913141332">
+<p id="20250913141332-15yd6on" updated="20250913141332">​<span data-type="code">context</span>：例句上下文信息</p>
+</li>
+<li id="20250921231229-s66jcki" updated="20250921231229">
+<p id="20250921231229-r8dux6r" updated="20250921231237">created_at ：创建时间</p>
+</li>
+<li id="20250921231238-4mki1nd" updated="20250921231246">
+<p id="20250921231238-mulr8do" updated="20250921231246">updated_at ：更新时间</p>
+</li>
+</ul>
+<h3 id="20250913141332-gsfdxw7" updated="20250921231402">7. WordForm（词形变化表）</h3>
+<p updated="20250913141332" id="20250913141332-gakp6v6">​<span data-type="strong">功能</span>​：存储单词的各种形式变化  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-0p6lf2a" updated="20250921231402">
+<li updated="20250921231402" id="20250913141332-ffphrj7">
+<p updated="20250921231402" id="20250913141332-s4fct42">​<span data-type="code">id</span>：主键，单词形式唯一标识符，变化ID</p>
+</li>
+<li id="20250913141332-yyixfh1" updated="20250913141332">
+<p id="20250913141332-4r0sx7q" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li id="20250913141332-dnnb91a" updated="20250921231307">
+<p updated="20250921231307" id="20250913141332-aw620qp">​<span data-type="code">form_type</span>：形式类型(复数、过去式等) ENUM(  
+        'BASE_FORM', 'THIRD_PERSON', 'PAST_TENSE', 'PAST_PARTICIPLE',  
+        'PRESENT_PARTICIPLE', 'PLURAL_FORM', 'COMPARATIVE', 'SUPERLATIVE', 'POSSESSIVE'  
+    )</p>
+</li>
+<li id="20250913141332-w0908a9" updated="20250913141332">
+<p id="20250913141332-soo4cuc" updated="20250913141332">​<span data-type="code">form_word</span>：变形后的单词</p>
+</li>
+<li id="20250913141332-hrotp4y" updated="20250921231333">
+<p id="20250913141332-khzahcg" updated="20250921231333">created_at ：创建时间</p>
+</li>
+</ul>
+<h2 id="20250913141332-jqftvhi" updated="20250913141332">分类与标签表</h2>
+<h3 id="20250913141332-t3jhhd5" updated="20250913141332">10. Tag（标签表）</h3>
+<p id="20250913141332-xeg1xls" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词标签  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" updated="20250913141332" id="20250913141332-sumv1ss">
+<li id="20250913141332-gisd2s9" updated="20250913141332">
+<p id="20250913141332-9xyi3hg" updated="20250913141332">​<span data-type="code">id</span>：主键，标签唯一标识符</p>
+</li>
+<li id="20250913141332-ypd3d0c" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-wkqxviq">​<span data-type="code">name</span>：标签名称(如:雅思,托福,GRE,四六级等)</p>
+</li>
+</ul>
+<h3 id="20250913141332-8pbrvuc" updated="20250913141332">11. WordTag（单词标签关联表）</h3>
+<p id="20250913141332-4tdi1y3" updated="20250913141332">​<span data-type="strong">功能</span>​：建立单词与标签的多对多关系  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-bse34i0" updated="20250913141332">
+<li updated="20250913141332" id="20250913141332-9vcv14e">
+<p id="20250913141332-z6gxk3r" updated="20250913141332">​<span data-type="code">id</span>：主键，单词标签关联唯一标识符</p>
+</li>
+<li id="20250913141332-q7llk26" updated="20250913141332">
+<p id="20250913141332-lw3b8oe" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li updated="20250913141332" id="20250913141332-j88xapf">
+<p updated="20250913141332" id="20250913141332-t40kary">​<span data-type="code">tag_id</span>：外键，关联的标签ID</p>
+</li>
+</ul>
+<h3 id="20250913141332-j0gmrr9" updated="20250913141332">12. Category（分类表）</h3>
+<p id="20250913141332-x0hlupc" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词分类  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-0bo63w6" updated="20250913141332">
+<li id="20250913141332-5xxgsqn" updated="20250913141332">
+<p id="20250913141332-6n4na8m" updated="20250913141332">​<span data-type="code">id</span>：主键，分类唯一标识符</p>
+</li>
+<li id="20250913141332-ke9ksj1" updated="20250913141332">
+<p id="20250913141332-bgd08r0" updated="20250913141332">​<span data-type="code">name</span>：分类名称(如:日常用语,商务英语,科技,医学等)</p>
+</li>
+<li id="20250913141332-ov09es6" updated="20250913141332">
+<p id="20250913141332-w74j4av" updated="20250913141332">​<span data-type="code">parent_id</span>：外键，父分类ID(用于层级分类)</p>
+</li>
+</ul>
+<h3 id="20250913141332-fyox1bk" updated="20250913141332">13. WordCategory（单词分类关联表）</h3>
+<p id="20250913141332-l01ef0u" updated="20250913141332">​<span data-type="strong">功能</span>​：建立单词与分类的多对多关系  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-hgvfpxq" updated="20250913141332">
+<li id="20250913141332-kudwrn7" updated="20250913141332">
+<p id="20250913141332-wqetibt" updated="20250913141332">​<span data-type="code">id</span>：主键，单词分类关联唯一标识符</p>
+</li>
+<li id="20250913141332-k8fcp1r" updated="20250913141332">
+<p id="20250913141332-tsrjlmf" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li id="20250913141332-kmldk1r" updated="20250913141332">
+<p id="20250913141332-y3v2vsh" updated="20250913141332">​<span data-type="code">category_id</span>：外键，关联的分类ID</p>
+</li>
+</ul>
+<h2 id="20250913141332-89g1sj9" updated="20250922132219">单词关系表</h2>
+<h3 id="20250913141332-51wh2wb" updated="20250922132219">14. WordRelation（单词关系表）</h3>
+<p id="20250913141332-gnzf6nv" updated="20250921224514"><span data-type="strong">功能</span>：存储单词之间的关系  
+<span data-type="strong">属性</span>：</p>
+<ul start="0" id="20250913141332-bid4b29" updated="20250921230721">
+<li id="20250913141332-n7bv40q" updated="20250921230721">
+<p id="20250913141332-griwve1" updated="20250921230721">​<span data-type="code">id</span>：主键，关系唯一标识符，关系ID</p>
+</li>
+<li id="20250913141332-mrar9dd" updated="20250913141332">
+<p id="20250913141332-bcgxmxb" updated="20250913141332">​<span data-type="code">source_id</span>：外键，源单词ID</p>
+</li>
+<li id="20250913141332-dvxxpqp" updated="20250913141332">
+<p id="20250913141332-z68uezm" updated="20250913141332">​<span data-type="code">target_id</span>：外键，目标单词ID</p>
+</li>
+<li id="20250913141332-lhwo0p4" updated="20250913141332">
+<p id="20250913141332-n6upy5y" updated="20250913141332">​<span data-type="code">created_at</span>：关系创建时间</p>
+</li>
+<li id="20250921230614-a91fj4s" updated="20250921230624">
+<p updated="20250921230624" id="20250921230614-dwiahqf">​<span data-type="code">updated_at </span>：关系更新时间</p>
+</li>
+</ul>
+<p id="20250921224202-gebkbap" updated="20250921230748">（两个单词之间只有一条关系边）</p>
+<p id="20250922132219-4ungmzb" updated="20250922132219">‍</p>
+<h3 id="20250921224210-yymq1ta" updated="20250921230712">14. RelationType（关系类型表）</h3>
+<p id="20250921224210-9x5jfm3" updated="20250921224521"><span data-type="strong">功能</span>：存储单词之间的各种关系类型  
+<span data-type="strong">属性</span>：</p>
+<ul start="0" id="20250921224210-huqbi7j" updated="20250921230712">
+<li updated="20250921230712" id="20250921224210-64d6uci">
+<p id="20250921224210-chd9kqo" updated="20250921230712">​<span data-type="code">id</span>：主键，关系唯一标识符，关系类型ID</p>
+</li>
+<li id="20250921224210-noi8exp" updated="20250921224210">
+<p id="20250921224210-c8b24n4" updated="20250921224253">​<span data-type="code">type_name</span>：关系类型名称</p>
+</li>
+<li updated="20250921224210" id="20250921224210-ci1bq32">
+<p id="20250921224210-y9pgj5q" updated="20250921224321">​<span data-type="code">category</span>：关系类别，'semantic', 'formal', 'morphological', 'associative'</p>
+</li>
+<li id="20250921224210-vaaapub" updated="20250921224210">
+<p id="20250921224210-1j7skvt" updated="20250921224345">​<span data-type="code">description</span>：关系类型描述</p>
+</li>
+<li id="20250921224346-e7iezw2" updated="20250921224346">
+<p id="20250921224346-evojmr8" updated="20250921224404">created_at：创建时间</p>
+</li>
+</ul>
+<p id="20250921224428-jq95u86" updated="20250921224428">‍</p>
+<h3 id="20250921224434-m88jy62" updated="20250921230836">14. RelationTypeMapping（关系类型映射表）</h3>
+<p id="20250921224434-7jstiy5" updated="20250921224434">​<span data-type="strong">功能</span>​：存储单词之间的各种关系  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250921224434-apaclgl" updated="20250921224434">
+<li id="20250921224434-xh1bhz6" updated="20250921224434">
+<p id="20250921224434-8xj8270" updated="20250921230807">​<span data-type="code">id</span>：主键，关系映射唯一标识符，映射ID</p>
+</li>
+<li id="20250921224434-n4lzf4q" updated="20250921224434">
+<p id="20250921224434-hc281uz" updated="20250921225936">​<span data-type="code">relation_id </span>：关系ID，外键</p>
+</li>
+<li id="20250921225800-rhuksv2" updated="20250921225800">
+<p id="20250921225800-0n05q45" updated="20250921225941">relation_type_id ：关系类型ID，外键</p>
+</li>
+<li id="20250921224434-gakar4y" updated="20250921224434">
+<p id="20250921224434-22qte0h" updated="20250921225849">​<span data-type="code">official_strength</span>：官方关系强度(0-1)</p>
+</li>
+<li id="20250921224434-xx1eg5v" updated="20250921224434">
+<p id="20250921224434-86g9i7n" updated="20250921225905">​<span data-type="code">official_description </span>：官方关系描述</p>
+</li>
+<li id="20250921224434-buwsxwx" updated="20250921224434">
+<p id="20250921224434-1pl95bs" updated="20250921224434">created_at：创建时间</p>
+</li>
+<li id="20250921225916-68etdfc" updated="20250921225916">
+<p id="20250921225916-3nq70k2" updated="20250921225922">updated_at：更新时间</p>
+</li>
+</ul>
+<p id="20250921230829-mt1phq9" updated="20250921230830">（一条关系可以对应多个类型）</p>
+<p updated="20250921230836" id="20250921230836-cu8z8on">‍</p>
+<h2 id="20250913141332-np7flwv" updated="20250922132045">学习管理表</h2>
+<h3 id="20250913141332-e7scpis" updated="20250922132045">15. WordList（单词列表表）</h3>
+<p id="20250913141332-mq84vpr" updated="20250913141332">​<span data-type="strong">功能</span>​：存储用户创建的单词列表  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-1zklskg" updated="20250913141332">
+<li id="20250913141332-hm4jlgs" updated="20250913141332">
+<p id="20250913141332-9svhfca" updated="20250913141332">​<span data-type="code">id</span>：主键，单词列表唯一标识符</p>
+</li>
+<li id="20250913141332-pf5risg" updated="20250913141332">
+<p id="20250913141332-vc6lj9c" updated="20250913141332">​<span data-type="code">user_id</span>：外键，创建者用户ID</p>
+</li>
+<li id="20250913141332-67n025b" updated="20250913141332">
+<p id="20250913141332-utydw7z" updated="20250913141332">​<span data-type="code">name</span>：单词列表名称</p>
+</li>
+<li id="20250913141332-a2pr5k3" updated="20250913141332">
+<p id="20250913141332-eska24w" updated="20250913141332">​<span data-type="code">description</span>：单词列表描述</p>
+</li>
+<li id="20250913141332-rr3ubi7" updated="20250913141332">
+<p id="20250913141332-1j48tl1" updated="20250913141332">​<span data-type="code">is_public</span>：是否公开(其他用户可见)</p>
+</li>
+<li id="20250913141332-hcuazq8" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-4vz47xv">​<span data-type="code">created_at</span>：列表创建时间</p>
+</li>
+<li id="20250913141332-6p7t2jl" updated="20250913141332">
+<p id="20250913141332-kg0puzl" updated="20250913141332">​<span data-type="code">word_count</span>：列表中单词数量</p>
+</li>
+</ul>
+<p id="20250922132043-orlngcd" updated="20250922132043">‍</p>
+<h3 id="20250922132045-c56wvfm" updated="20250922132715">15. Notes（统一笔记表）</h3>
+<p id="20250922132045-dhbfcp5" updated="20250922132045">​<span data-type="strong">功能</span>​：存储用户创建的各种类型笔记（单词笔记、关系笔记、关系类型笔记）</p>
+<p id="20250922132045-o81fq79" updated="20250922132045">​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250922132045-clxr93b" updated="20250922132715">
+<li id="20250922132045-mjcpn26" updated="20250922132045">
+<p id="20250922132045-hkra6st" updated="20250922132045">​<span data-type="code">id</span>：主键，笔记唯一标识符</p>
+</li>
+<li updated="20250922132045" id="20250922132045-q4ch0ty">
+<p updated="20250922132045" id="20250922132045-yg35ech">​<span data-type="code">user_id</span>：外键，创建者用户ID</p>
+</li>
+<li id="20250922132045-5qxoc1z" updated="20250922132045">
+<p id="20250922132045-mw48h0l" updated="20250922132045">​<span data-type="code">word_id</span>：外键，关联单词ID（可选）</p>
+</li>
+<li updated="20250922132045" id="20250922132045-of700v0">
+<p id="20250922132045-qvfw6hp" updated="20250922132656">​<span data-type="code">relation_type_mapping_id</span>：外键，关系类型映射ID（可选）</p>
+</li>
+<li updated="20250922132045" id="20250922132045-3xe200b">
+<p id="20250922132045-g9b9zm0" updated="20250922132045">​<span data-type="code">title</span>：笔记标题</p>
+</li>
+<li updated="20250922132045" id="20250922132045-m38ezkh">
+<p id="20250922132045-ateulot" updated="20250922132045">​<span data-type="code">content</span>：笔记内容</p>
+</li>
+<li updated="20250922132045" id="20250922132045-2svtrvi">
+<p id="20250922132045-ffig48p" updated="20250922132045">​<span data-type="code">note_type</span>：笔记类型（word/relation/relation_type）</p>
+</li>
+<li updated="20250922132715" id="20250922132045-bmyqoh7">
+<p id="20250922132045-ug1us8z" updated="20250922132715">​<span data-type="code">strength</span>：用户自定义关系强度（仅对关系笔记有效）</p>
+</li>
+<li id="20250922132045-ppq48j2" updated="20250922132045">
+<p id="20250922132045-kt3jdz0" updated="20250922132045">​<span data-type="code">tags</span>：标签数组（JSON格式）</p>
+</li>
+<li id="20250922132045-5875rqh" updated="20250922132045">
+<p id="20250922132045-e1cjw9g" updated="20250922132045">​<span data-type="code">is_public</span>：是否公开(其他用户可见)</p>
+</li>
+<li id="20250922132045-wps2cz8" updated="20250922132045">
+<p id="20250922132045-3gexri8" updated="20250922132045">​<span data-type="code">likes</span>：点赞数</p>
+</li>
+<li id="20250922132045-4jdff0k" updated="20250922132045">
+<p id="20250922132045-93n608k" updated="20250922132045">​<span data-type="code">views</span>：浏览数</p>
+</li>
+<li id="20250922132045-1ygelmg" updated="20250922132045">
+<p updated="20250922132045" id="20250922132045-bgermqa">​<span data-type="code">status</span>：审核状态（pending/approved/rejected）</p>
+</li>
+<li id="20250922132045-p1iwojs" updated="20250922132045">
+<p id="20250922132045-4aabprh" updated="20250922132045">​<span data-type="code">created_at</span>：笔记创建时间</p>
+</li>
+<li id="20250922132045-l54s95n" updated="20250922132045">
+<p id="20250922132045-d2ndv51" updated="20250922132051">​<span data-type="code">updated_at</span>：笔记更新时间</p>
+<p id="20250922132047-y4bhpqm" updated="20250922132047">‍</p>
+</li>
+</ul>
+<h3 id="20250913141332-jh6xz2d" updated="20250913141332">16. WordListItem（单词列表项表）</h3>
+<p id="20250913141332-22t611z" updated="20250913141332">​<span data-type="strong">功能</span>​：存储单词列表中的单词项  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-t8k8x1f" updated="20250913141332">
+<li id="20250913141332-xphjsl8" updated="20250913141332">
+<p id="20250913141332-84yq6xp" updated="20250913141332">​<span data-type="code">id</span>：主键，列表项唯一标识符</p>
+</li>
+<li id="20250913141332-5qxegp8" updated="20250913141332">
+<p id="20250913141332-x3s1zza" updated="20250913141332">​<span data-type="code">word_list_id</span>：外键，关联的单词列表ID</p>
+</li>
+<li id="20250913141332-4novjfx" updated="20250913141332">
+<p id="20250913141332-o12eesi" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li id="20250913141332-x5mo762" updated="20250913141332">
+<p id="20250913141332-gtgr6vr" updated="20250913141332">​<span data-type="code">added_at</span>：单词添加到列表的时间</p>
+</li>
+<li updated="20250913141332" id="20250913141332-pkdclvu">
+<p id="20250913141332-7ltfnch" updated="20250913141332">​<span data-type="code">order</span>：在列表中的显示顺序</p>
+</li>
+</ul>
+<h3 id="20250913141332-ny2l4bk" updated="20250913141332">17. StudyPlan（学习计划表）</h3>
+<p updated="20250913141332" id="20250913141332-iy1cds8">​<span data-type="strong">功能</span>​：存储用户的学习计划  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" updated="20250913141332" id="20250913141332-mayn9o3">
+<li id="20250913141332-9g9tmoa" updated="20250913141332">
+<p id="20250913141332-movsbta" updated="20250913141332">​<span data-type="code">id</span>：主键，学习计划唯一标识符</p>
+</li>
+<li updated="20250913141332" id="20250913141332-ekovp3o">
+<p id="20250913141332-us4a9pn" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-88vv6e5" updated="20250913141332">
+<p id="20250913141332-fewg8z9" updated="20250913141332">​<span data-type="code">name</span>：学习计划名称</p>
+</li>
+<li id="20250913141332-sd5flan" updated="20250913141332">
+<p id="20250913141332-0xnjm9a" updated="20250913141332">​<span data-type="code">description</span>：学习计划描述</p>
+</li>
+<li id="20250913141332-a6ekvvy" updated="20250913141332">
+<p id="20250913141332-b0yc89g" updated="20250913141332">​<span data-type="code">word_list_id</span>：外键，关联的单词列表ID</p>
+</li>
+<li id="20250913141332-3zchu3y" updated="20250913141332">
+<p id="20250913141332-tswoyqq" updated="20250913141332">​<span data-type="code">daily_target</span>：每日目标学习单词数量</p>
+</li>
+<li id="20250913141332-4rli60t" updated="20250913141332">
+<p id="20250913141332-1lsz4ux" updated="20250913141332">​<span data-type="code">start_date</span>：计划开始日期</p>
+</li>
+<li id="20250913141332-k7np0l1" updated="20250913141332">
+<p id="20250913141332-xdma2zz" updated="20250913141332">​<span data-type="code">end_date</span>：计划结束日期(可选)</p>
+</li>
+<li id="20250913141332-7m2eam4" updated="20250913141332">
+<p id="20250913141332-lzdk3bl" updated="20250913141332">​<span data-type="code">is_active</span>：计划是否激活</p>
+</li>
+</ul>
+<h3 id="20250913141332-uhf63m3" updated="20250913141332">18. UserWordProgress（用户单词进度表）</h3>
+<p id="20250913141332-49le5zo" updated="20250913141332">​<span data-type="strong">功能</span>​：跟踪用户对每个单词的学习进度  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-7qkm2sn" updated="20250913141332">
+<li updated="20250913141332" id="20250913141332-ko8ny4r">
+<p id="20250913141332-0y7z7qm" updated="20250913141332">​<span data-type="code">id</span>：主键，学习进度唯一标识符</p>
+</li>
+<li updated="20250913141332" id="20250913141332-pzjaak3">
+<p id="20250913141332-cuuedkl" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-uxkcccd" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-h6rc79m">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li id="20250913141332-pm4usll" updated="20250913141332">
+<p id="20250913141332-57jafx0" updated="20250913141332">​<span data-type="code">status</span>：学习状态(new, learning, reviewing, mastered)</p>
+</li>
+<li id="20250913141332-qyontmp" updated="20250913141332">
+<p id="20250913141332-jp4df1e" updated="20250913141332">​<span data-type="code">familiarity</span>：熟悉程度(0-100)</p>
+</li>
+<li id="20250913141332-nowa9io" updated="20250913141332">
+<p id="20250913141332-la2uknd" updated="20250913141332">​<span data-type="code">last_studied</span>：最后学习时间</p>
+</li>
+<li id="20250913141332-4vv9cjd" updated="20250913141332">
+<p id="20250913141332-xn9q0ag" updated="20250913141332">​<span data-type="code">next_review</span>：下次复习时间</p>
+</li>
+<li id="20250913141332-pvdh2bm" updated="20250913141332">
+<p id="20250913141332-7ygnbop" updated="20250913141332">​<span data-type="code">study_count</span>：学习次数</p>
+</li>
+<li id="20250913141332-xeiie7i" updated="20250913141332">
+<p id="20250913141332-l62mmng" updated="20250913141332">​<span data-type="code">correct_count</span>：答题正确次数</p>
+</li>
+<li id="20250913141332-m1hxfob" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-sx9b3w8">​<span data-type="code">wrong_count</span>：答题错误次数</p>
+</li>
+<li id="20250913141332-x4o4y3q" updated="20250913141332">
+<p id="20250913141332-dwwbbnm" updated="20250913141332">​<span data-type="code">ease_factor</span>：间隔重复算法中的易度因子</p>
+</li>
+<li id="20250913141332-pdh1z4v" updated="20250913141332">
+<p id="20250913141332-djjdxlq" updated="20250913141332">​<span data-type="code">interval</span>：下次复习间隔(天)</p>
+</li>
+<li id="20250913141332-288hk3h" updated="20250913141332">
+<p id="20250913141332-ngyh9v4" updated="20250913141332">​<span data-type="code">due_date</span>：计划复习日期</p>
+</li>
+</ul>
+<h3 id="20250913141332-bu4e38w" updated="20250913141332">19. StudySession（学习会话表）</h3>
+<p updated="20250913141332" id="20250913141332-vy0aq84">​<span data-type="strong">功能</span>​：记录用户的学习会话  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-aucjqel" updated="20250913141332">
+<li id="20250913141332-ykuyc5s" updated="20250913141332">
+<p id="20250913141332-9k10tv3" updated="20250913141332">​<span data-type="code">id</span>：主键，学习会话唯一标识符</p>
+</li>
+<li id="20250913141332-ohr8rpt" updated="20250913141332">
+<p id="20250913141332-kzbxxtv" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-d3h91md" updated="20250913141332">
+<p id="20250913141332-6b9t6xe" updated="20250913141332">​<span data-type="code">start_time</span>：会话开始时间</p>
+</li>
+<li id="20250913141332-ljzsn06" updated="20250913141332">
+<p id="20250913141332-xli5mw1" updated="20250913141332">​<span data-type="code">end_time</span>：会话结束时间</p>
+</li>
+<li id="20250913141332-9lsxxvg" updated="20250913141332">
+<p id="20250913141332-v3rpfp4" updated="20250913141332">​<span data-type="code">duration</span>：会话持续时间(秒)</p>
+</li>
+<li id="20250913141332-r6hhg1o" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-lpsba2m">​<span data-type="code">words_studied</span>：本次会话学习的单词数量</p>
+</li>
+<li id="20250913141332-v6pxwyb" updated="20250913141332">
+<p id="20250913141332-fr1pce0" updated="20250913141332">​<span data-type="code">session_type</span>：会话类型(learn, review, test等)</p>
+</li>
+</ul>
+<h3 id="20250913141332-a8q3ood" updated="20250913141332">20. ReviewSchedule（复习计划表）</h3>
+<p id="20250913141332-ars7esx" updated="20250913141332">​<span data-type="strong">功能</span>​：安排用户的单词复习计划  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-wrf5bjh" updated="20250913141332">
+<li id="20250913141332-m5u8drc" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-h1wn7kx">​<span data-type="code">id</span>：主键，复习计划唯一标识符</p>
+</li>
+<li id="20250913141332-jiinvau" updated="20250913141332">
+<p id="20250913141332-p4pkc8j" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-y96ls8s" updated="20250913141332">
+<p id="20250913141332-xe3ipho" updated="20250913141332">​<span data-type="code">word_id</span>：外键，关联的单词ID</p>
+</li>
+<li updated="20250913141332" id="20250913141332-53fnavy">
+<p id="20250913141332-g4kwe5w" updated="20250913141332">​<span data-type="code">due_date</span>：计划复习日期</p>
+</li>
+<li id="20250913141332-f2feb3p" updated="20250913141332">
+<p id="20250913141332-1jp0k7b" updated="20250913141332">​<span data-type="code">completed</span>：是否已完成复习</p>
+</li>
+<li id="20250913141332-damma1v" updated="20250913141332">
+<p id="20250913141332-rkpbccc" updated="20250913141332">​<span data-type="code">completed_at</span>：完成复习的时间</p>
+</li>
+</ul>
+<h2 id="20250913141332-pefst0c" updated="20250913141332">测试评估表</h2>
+<h3 id="20250913141332-3z6sel2" updated="20250913141332">21. Quiz（测试表）</h3>
+<p id="20250913141332-uo962t8" updated="20250913141332">​<span data-type="strong">功能</span>​：存储测试的基本信息  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-rebo91n" updated="20250913141332">
+<li id="20250913141332-r4klfa7" updated="20250913141332">
+<p id="20250913141332-dbm6ar1" updated="20250913141332">​<span data-type="code">id</span>：主键，测试唯一标识符</p>
+</li>
+<li id="20250913141332-05o2q4r" updated="20250913141332">
+<p id="20250913141332-vkbxvqk" updated="20250913141332">​<span data-type="code">name</span>：测试名称</p>
+</li>
+<li id="20250913141332-1pf0m9o" updated="20250913141332">
+<p id="20250913141332-nwoa4mk" updated="20250913141332">​<span data-type="code">description</span>：测试描述</p>
+</li>
+<li id="20250913141332-jlqc4x9" updated="20250913141332">
+<p id="20250913141332-qpd1e1z" updated="20250913141332">​<span data-type="code">quiz_type</span>：测试类型(multiple_choice, spelling, matching等)</p>
+</li>
+<li id="20250913141332-v44kshi" updated="20250913141332">
+<p id="20250913141332-99cujd2" updated="20250913141332">​<span data-type="code">difficulty</span>：测试难度(easy, medium, hard)</p>
+</li>
+<li id="20250913141332-fxe1npy" updated="20250913141332">
+<p id="20250913141332-2yl6do1" updated="20250913141332">​<span data-type="code">time_limit</span>：时间限制(秒)</p>
+</li>
+</ul>
+<h3 id="20250913141332-ab28fpr" updated="20250913141332">22. QuizQuestion（测试问题表）</h3>
+<p id="20250913141332-lmbz9zd" updated="20250913141332">​<span data-type="strong">功能</span>​：存储测试题目  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-69fo9pt" updated="20250913141332">
+<li id="20250913141332-a4z2nel" updated="20250913141332">
+<p id="20250913141332-5ub1bv8" updated="20250913141332">​<span data-type="code">id</span>：主键，测试题目唯一标识符</p>
+</li>
+<li id="20250913141332-kuuos6y" updated="20250913141332">
+<p id="20250913141332-8jclcvl" updated="20250913141332">​<span data-type="code">quiz_id</span>：外键，关联的测试ID</p>
+</li>
+<li id="20250913141332-48nn5cv" updated="20250913141332">
+<p id="20250913141332-x0vrot8" updated="20250913141332">​<span data-type="code">question_text</span>：题目文本</p>
+</li>
+<li id="20250913141332-bkrd5dz" updated="20250913141332">
+<p id="20250913141332-uz4hthw" updated="20250913141332">​<span data-type="code">question_type</span>：题目类型(definition, synonym, antonym, usage等)</p>
+</li>
+<li id="20250913141332-r3plqa9" updated="20250913141332">
+<p id="20250913141332-q46uuyd" updated="20250913141332">​<span data-type="code">options</span>：选项(JSON格式存储)</p>
+</li>
+<li id="20250913141332-fjqr1nx" updated="20250913141332">
+<p id="20250913141332-ko0a0zy" updated="20250913141332">​<span data-type="code">correct_answer</span>：正确答案</p>
+</li>
+<li id="20250913141332-id316jd" updated="20250913141332">
+<p id="20250913141332-a7qn8va" updated="20250913141332">​<span data-type="code">explanation</span>：答案解析</p>
+</li>
+</ul>
+<h3 id="20250913141332-fy7csg4" updated="20250913141332">23. QuizAttempt（测试尝试表）</h3>
+<p id="20250913141332-zdo3jrt" updated="20250913141332">​<span data-type="strong">功能</span>​：记录用户尝试测试的情况  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" updated="20250913141332" id="20250913141332-w48kssu">
+<li id="20250913141332-l9wh4dh" updated="20250913141332">
+<p id="20250913141332-o4htrvm" updated="20250913141332">​<span data-type="code">id</span>：主键，测试尝试唯一标识符</p>
+</li>
+<li id="20250913141332-ml5i2fl" updated="20250913141332">
+<p id="20250913141332-x59ueka" updated="20250913141332">​<span data-type="code">user_id</span>：外键，关联的用户ID</p>
+</li>
+<li id="20250913141332-nb8ecjc" updated="20250913141332">
+<p id="20250913141332-tvyanc1" updated="20250913141332">​<span data-type="code">quiz_id</span>：外键，关联的测试ID</p>
+</li>
+<li id="20250913141332-w2alukh" updated="20250913141332">
+<p id="20250913141332-d4q56gn" updated="20250913141332">​<span data-type="code">start_time</span>：开始时间</p>
+</li>
+<li id="20250913141332-plbzm7i" updated="20250913141332">
+<p id="20250913141332-imtksr4" updated="20250913141332">​<span data-type="code">end_time</span>：结束时间</p>
+</li>
+<li id="20250913141332-xu2x0uz" updated="20250913141332">
+<p id="20250913141332-w3zobms" updated="20250913141332">​<span data-type="code">score</span>：得分(百分比)</p>
+</li>
+<li id="20250913141332-p8cziq2" updated="20250913141332">
+<p id="20250913141332-esx1gui" updated="20250913141332">​<span data-type="code">total_questions</span>：总题目数</p>
+</li>
+<li updated="20250913141332" id="20250913141332-aufmscw">
+<p id="20250913141332-56tubgh" updated="20250913141332">​<span data-type="code">correct_answers</span>：答对题目数</p>
+</li>
+</ul>
+<h3 id="20250913141332-usf345i" updated="20250913141332">24. QuizResult（测试结果表）</h3>
+<p id="20250913141332-xzmfalq" updated="20250913141332">​<span data-type="strong">功能</span>​：存储用户测试的详细结果  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250913141332-mmyire8" updated="20250913141332">
+<li id="20250913141332-gsxjtpz" updated="20250913141332">
+<p id="20250913141332-hdszjpc" updated="20250913141332">​<span data-type="code">id</span>：主键，测试结果唯一标识符</p>
+</li>
+<li id="20250913141332-su7wgt8" updated="20250913141332">
+<p id="20250913141332-02pr8i8" updated="20250913141332">​<span data-type="code">quiz_attempt_id</span>：外键，关联的测试尝试ID</p>
+</li>
+<li id="20250913141332-ohtqub7" updated="20250913141332">
+<p id="20250913141332-bc9l4kr" updated="20250913141332">​<span data-type="code">question_id</span>：外键，关联的题目ID</p>
+</li>
+<li id="20250913141332-v68cuy8" updated="20250913141332">
+<p id="20250913141332-3j31vw6" updated="20250913141332">​<span data-type="code">user_answer</span>：用户答案</p>
+</li>
+<li id="20250913141332-0ihoepz" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-8du51k5">​<span data-type="code">is_correct</span>：答案是否正确</p>
+</li>
+<li id="20250913141332-kyff1gv" updated="20250913141332">
+<p id="20250913141332-u195f9l" updated="20250913141332">​<span data-type="code">time_taken</span>：答题耗时(秒)</p>
+</li>
+</ul>
+<h2 id="20250913141332-pl49wnl" updated="20250922133021">用户贡献表</h2>
+<h3 id="20250913141332-dp6c4xa" updated="20250922133021">25. UserContribution（用户贡献表）</h3>
+<p id="20250913141332-0l8ryc8" updated="20250913141332">​<span data-type="strong">功能</span>​：记录用户提交的内容修改建议  
+​<span data-type="strong">属性</span>​：</p>
+<ul start="0" updated="20250913141332" id="20250913141332-vc5am2m">
+<li id="20250913141332-jq9lgls" updated="20250913141332">
+<p id="20250913141332-b643oxu" updated="20250913141332">​<span data-type="code">id</span>：主键，贡献记录唯一标识符</p>
+</li>
+<li id="20250913141332-c22q83r" updated="20250913141332">
+<p id="20250913141332-2jdc0o7" updated="20250913141332">​<span data-type="code">type</span>：贡献类型(add_word, update_word, add_relation, update_relation)</p>
+</li>
+<li id="20250913141332-jdtwk3p" updated="20250913141332">
+<p id="20250913141332-frzxa9p" updated="20250913141332">​<span data-type="code">data</span>：JSON字段，存储提交的详细数据</p>
+</li>
+<li id="20250913141332-93huxfa" updated="20250913141332">
+<p id="20250913141332-k60agw8" updated="20250913141332">​<span data-type="code">status</span>：审核状态(pending, approved, rejected)</p>
+</li>
+<li id="20250913141332-o5jh8vh" updated="20250913141332">
+<p id="20250913141332-2e0sqx8" updated="20250913141332">​<span data-type="code">submitted_by</span>：外键，提交者ID</p>
+</li>
+<li id="20250913141332-eeviyo5" updated="20250913141332">
+<p id="20250913141332-txana7t" updated="20250913141332">​<span data-type="code">submitted_at</span>：提交时间</p>
+</li>
+<li id="20250913141332-kfsdfm6" updated="20250913141332">
+<p id="20250913141332-gf9y3rg" updated="20250913141332">​<span data-type="code">reviewed_by</span>：外键，审核人ID</p>
+</li>
+<li id="20250913141332-mm6g01t" updated="20250913141332">
+<p id="20250913141332-4o40f8r" updated="20250913141332">​<span data-type="code">reviewed_at</span>：审核时间</p>
+</li>
+<li id="20250913141332-6qdg05r" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-n7nsamg">​<span data-type="code">feedback</span>：审核反馈</p>
+</li>
+</ul>
+<p id="20250922133020-g03ywz5" updated="20250922133020">‍</p>
+<h3 id="20250922133021-55gbw2n" updated="20250922133116">Wordbooks（词库表）</h3>
+<p id="20250922133021-a015sqi" updated="20250922133021">​<span data-type="strong">功能</span>​：存储用户创建或系统预定义的词库集合</p>
+<p id="20250922133021-kcdjsyq" updated="20250922133021">​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250922133021-sepures" updated="20250922133021">
+<li id="20250922133021-z4ulb53" updated="20250922133021">
+<p id="20250922133021-bivjjiw" updated="20250922133021">​<span data-type="code">id</span>：主键，词库唯一标识符</p>
+</li>
+<li id="20250922133021-ajwdcf1" updated="20250922133021">
+<p updated="20250922133021" id="20250922133021-mbcn49x">​<span data-type="code">name</span>：词库名称（必填）</p>
+</li>
+<li id="20250922133021-c2zzuns" updated="20250922133021">
+<p id="20250922133021-vhbirod" updated="20250922133021">​<span data-type="code">creator_id</span>：外键，创建者用户ID（必填）</p>
+</li>
+<li id="20250922133021-u30h4a1" updated="20250922133021">
+<p id="20250922133021-6i5ttjw" updated="20250922133021">​<span data-type="code">is_public</span>：是否公开（默认私有）</p>
+</li>
+<li id="20250922133021-ciuxoil" updated="20250922133021">
+<p id="20250922133021-k6f27bz" updated="20250922133021">​<span data-type="code">likes</span>：点赞数统计（默认0）</p>
+</li>
+<li id="20250922133021-ldxz01i" updated="20250922133021">
+<p id="20250922133021-ub71vp3" updated="20250922133021">​<span data-type="code">tags</span>：标签数组（JSON格式存储）</p>
+</li>
+<li id="20250922133021-xg73l4z" updated="20250922133021">
+<p id="20250922133021-h4b5np9" updated="20250922133021">​<span data-type="code">created_at</span>：词库创建时间（自动记录）</p>
+</li>
+<li updated="20250922133021" id="20250922133021-m6uwaik">
+<p updated="20250922133021" id="20250922133021-ieipwtj">​<span data-type="code">updated_at</span>：词库最后更新时间（自动更新）</p>
+</li>
+</ul>
+<p id="20250922133115-c64h5ht" updated="20250922133115">‍</p>
+<h3 id="20250922133116-mrb312a" updated="20250922133116">Wordbook_Words（词库单词关联表）</h3>
+<p id="20250922133116-5y5vvkf" updated="20250922133116">​<span data-type="strong">功能</span>​：维护词库与单词的多对多关联关系</p>
+<p id="20250922133116-vs60sny" updated="20250922133116">​<span data-type="strong">属性</span>​：</p>
+<ul start="0" id="20250922133116-h5m9uuw" updated="20250922133116">
+<li id="20250922133116-sngujgh" updated="20250922133116">
+<p id="20250922133116-cptnz79" updated="20250922133116">​<span data-type="code">id</span>：主键，关联记录唯一标识符</p>
+</li>
+<li id="20250922133116-256730j" updated="20250922133116">
+<p id="20250922133116-1pto1ot" updated="20250922133116">​<span data-type="code">wordbook_id</span>：外键，所属词库ID（必填）</p>
+</li>
+<li id="20250922133116-zk27kd7" updated="20250922133116">
+<p id="20250922133116-pwmtyzc" updated="20250922133116">​<span data-type="code">word_id</span>：外键，关联单词ID（必填）</p>
+</li>
+<li updated="20250922133116" id="20250922133116-r7p3sli">
+<p id="20250922133116-7t5g1r9" updated="20250922133116">​<span data-type="code">added_at</span>：单词加入词库的时间（自动记录）</p>
+</li>
+</ul>
+<h2 id="20250913141332-7ns9rmn" updated="20260322194252">总结</h2>
+<p id="20250913141332-tdjtoaj" updated="20250913141332">这个数据库设计支持了一个完整的单词学习系统，涵盖了用户管理、单词管理、学习进度跟踪、测试评估和社区贡献等功能。表之间的关系设计合理，支持系统的核心功能需求，包括：</p>
+<ol id="20250913141332-r3m44il" updated="20250913141332">
+<li id="20250913141332-86ffkgr" updated="20250913141332">
+<p updated="20250913141332" id="20250913141332-ow0hj8j">多维度单词管理（释义、例句、发音、词形变化）</p>
+</li>
+<li id="20250913141332-tp2hsev" updated="20250913141332">
+<p id="20250913141332-0ojn0qp" updated="20250913141332">复杂的单词关系网络</p>
+</li>
+<li id="20250913141332-ca9th39" updated="20250913141332">
+<p id="20250913141332-f7697mi" updated="20250913141332">个性化学习计划和进度跟踪</p>
+</li>
+<li id="20250913141332-15stohb" updated="20250913141332">
+<p id="20250913141332-joax39n" updated="20250913141332">间隔重复算法的实现</p>
+</li>
+<li id="20250913141332-ttyfa3t" updated="20250913141332">
+<p id="20250913141332-9mvw6js" updated="20250913141332">测试评估和学习效果分析</p>
+</li>
+<li id="20250913141332-b46oxij" updated="20250913141332">
+<p id="20250913141332-uhqhfzq" updated="20250913141332">用户贡献和社区协作机制</p>
+</li>
+</ol>
+<p id="20250913141332-iwdt5qx" updated="20250913141332">这种设计能够支持您之前描述的所有核心功能，并为未来的功能扩展提供了良好的基础。</p>
+<pre class="code-block" data-language="erDiagram" id="20250913141440-qq30eph" style="line-height: 22px;" updated="20260322194252"><code class="hljs">erDiagram
+    USER ||--o{ USER_SETTING : has
+    USER ||--o{ USER_STATISTIC : has
+    USER ||--o{ WORD_LIST : creates
+    USER ||--o{ STUDY_PLAN : creates
+    USER ||--o{ USER_WORD_PROGRESS : has
+    USER ||--o{ STUDY_SESSION : has
+    USER ||--o{ REVIEW_SCHEDULE : has
+    USER ||--o{ QUIZ_ATTEMPT : attempts
+    USER ||--o{ USER_CONTRIBUTION : submits
+    
+    WORD_LIST ||--o{ WORD_LIST_ITEM : contains
+    STUDY_PLAN ||--o| WORD_LIST : uses
+    
+    WORD ||--o{ WORD_DEFINITION : has
+    WORD ||--o{ EXAMPLE : has
+    WORD ||--o{ WORD_FORM : has
+    WORD ||--o{ WORD_PRONUNCIATION : has
+    WORD ||--o{ WORD_TAG : tagged
+    WORD ||--o{ WORD_CATEGORY : categorized
+    WORD ||--o{ USER_WORD_PROGRESS : appears_in
+    WORD ||--o{ REVIEW_SCHEDULE : scheduled_for
+    WORD ||--o{ WORD_RELATION_SOURCE : relates_from
+    WORD ||--o{ WORD_RELATION_TARGET : relates_to
+    
+    DIFFICULTY_LEVEL ||--o{ WORD : classifies
+    TAG ||--o{ WORD_TAG : identifies
+    CATEGORY ||--o{ WORD_CATEGORY : classifies
+    
+    QUIZ ||--o{ QUIZ_QUESTION : contains
+    QUIZ_ATTEMPT ||--o{ QUIZ_RESULT : produces
+    
+    USER {
+        int id PK
+        string username
+        string email
+        string hashed_password
+        string display_name
+        string avatar
+        datetime created_at
+        datetime last_login
+        boolean is_active
+        boolean is_premium
+        int streak_days
+        int total_words_learned
+    }
+    
+    USER_SETTING {
+        int id PK
+        int user_id FK
+        int daily_goal
+        boolean notification_enabled
+        time notification_time
+        boolean study_reminders
+        string language
+        string pronunciation_accent
+    }
+    
+    USER_STATISTIC {
+        int id PK
+        int user_id FK
+        date date
+        int words_studied
+        int time_studied
+        int correct_answers
+        int incorrect_answers
+    }
+    
+    WORD_LIST {
+        int id PK
+        int user_id FK
+        string name
+        string description
+        boolean is_public
+        datetime created_at
+        int word_count
+    }
+    
+    WORD_LIST_ITEM {
+        int id PK
+        int word_list_id FK
+        int word_id FK
+        datetime added_at
+        int order
+    }
+    
+    STUDY_PLAN {
+        int id PK
+        int user_id FK
+        string name
+        string description
+        int word_list_id FK
+        int daily_target
+        date start_date
+        date end_date
+        boolean is_active
+    }
+    
+    USER_WORD_PROGRESS {
+        int id PK
+        int user_id FK
+        int word_id FK
+        string status
+        int familiarity
+        datetime last_studied
+        datetime next_review
+        int study_count
+        int correct_count
+        int wrong_count
+        float ease_factor
+        int interval
+        datetime due_date
+    }
+    
+    STUDY_SESSION {
+        int id PK
+        int user_id FK
+        datetime start_time
+        datetime end_time
+        int duration
+        int words_studied
+        string session_type
+    }
+    
+    REVIEW_SCHEDULE {
+        int id PK
+        int user_id FK
+        int word_id FK
+        datetime due_date
+        boolean completed
+        datetime completed_at
+    }
+    
+    DIFFICULTY_LEVEL {
+        int id PK
+        string name
+        string description
+        int min_frequency
+        int max_frequency
+        string color_code
+        datetime created_at
+        datetime updated_at
+    }
+    
+    WORD {
+        int id PK
+        string word
+        string normalized_word
+        int length
+        int frequency_rank
+        int difficulty_level_id FK
+        boolean is_common
+        string tags_json
+        string etymology
+        datetime created_at
+        datetime updated_at
+        string description
+    }
+    
+    WORD_DEFINITION {
+        int id PK
+        int word_id FK
+        string part_of_speech
+        string definition
+        string definition_cn
+        int order
+        string domains_json
+        string example_usage
+    }
+    
+    EXAMPLE {
+        int id PK
+        int word_id FK
+        string sentence
+        string translation
+        string source
+        string context
+    }
+    SENTENCE_WORD {
+   	 	int id PK
+	    int sentence_id FK
+	    int word_id FK
+	    int definition_id FK
+	    int start_pos
+	    int end_pos
+	}
+    WORD_FORM {
+        int id PK
+        int word_id FK
+        string form_type
+        string form_word
+        boolean is_standard
+    }
+    
+    WORD_PRONUNCIATION {
+        int id PK
+        int word_id FK
+        string accent
+        string audio_url
+        string phonetic
+        string voice_actor
+        string audio_quality
+    }
+    
+    TAG {
+        int id PK
+        string name
+    }
+    
+    WORD_TAG {
+        int id PK
+        int word_id FK
+        int tag_id FK
+    }
+    
+    CATEGORY {
+        int id PK
+        string name
+        int parent_id FK
+    }
+    
+    WORD_CATEGORY {
+        int id PK
+        int word_id FK
+        int category_id FK
+    }
+    
+    WORD_RELATION {
+        int id PK
+        int source_id FK
+        int target_id FK
+        string relation_type
+        float strength
+        datetime created_at
+        string description
+    }
+    
+    QUIZ {
+        int id PK
+        string name
+        string description
+        string quiz_type
+        string difficulty
+        int time_limit
+    }
+    
+    QUIZ_QUESTION {
+        int id PK
+        int quiz_id FK
+        string question_text
+        string question_type
+        string options
+        string correct_answer
+        string explanation
+    }
+    
+    QUIZ_ATTEMPT {
+        int id PK
+        int user_id FK
+        int quiz_id FK
+        datetime start_time
+        datetime end_time
+        float score
+        int total_questions
+        int correct_answers
+    }
+    
+    QUIZ_RESULT {
+        int id PK
+        int quiz_attempt_id FK
+        int question_id FK
+        string user_answer
+        boolean is_correct
+        int time_taken
+    }
+    
+    USER_CONTRIBUTION {
+        int id PK
+        string type
+        string data
+        string status
+        int submitted_by FK
+        datetime submitted_at
+        int reviewed_by FK
+        datetime reviewed_at
+        string feedback
+    }
+</code></pre></div>
+<script src="appearance/icons/material/icon.js?v=3.5.0"></script>
+<script src="stage/build/export/protyle-method.js?v=3.5.0"></script>
+<script src="stage/protyle/js/lute/lute.min.js?v=3.5.0"></script>  
+<script>
+    
+    window.siyuan = {
+      config: {
+        appearance: { mode: 0, codeBlockThemeDark: "base16/dracula", codeBlockThemeLight: "github" },
+        editor: { 
+          codeLineWrap: true,
+          fontSize: 16,
+          codeLigatures: false,
+          plantUMLServePath: "https://www.plantuml.com/plantuml/svg/~1",
+          codeSyntaxHighlightLineNum: false,
+          katexMacros: decodeURI(`%7B%22%5C%5Cplaceholder%22:%22%5C%5Cphantom%22,%22%5C%5Censuremath%22:%22#1%22%7D`),
+        }
+      },
+      languages: {copy:"复制"}
+    };
+    const previewElement = document.getElementById('preview');
+    Protyle.highlightRender(previewElement, "stage/protyle");
+    Protyle.mathRender(previewElement, "stage/protyle", false);
+    Protyle.mermaidRender(previewElement, "stage/protyle");
+    Protyle.flowchartRender(previewElement, "stage/protyle");
+    Protyle.graphvizRender(previewElement, "stage/protyle");
+    Protyle.chartRender(previewElement, "stage/protyle");
+    Protyle.mindmapRender(previewElement, "stage/protyle");
+    Protyle.abcRender(previewElement, "stage/protyle");
+    Protyle.htmlRender(previewElement);
+    Protyle.plantumlRender(previewElement, "stage/protyle");
+    document.querySelectorAll(".protyle-action__copy").forEach((item) => {
+      item.addEventListener("click", (event) => {
+            let text = item.parentElement.nextElementSibling.textContent.trimEnd();
+            text = text.replace(/ /g, " "); // Replace non-breaking spaces with normal spaces when copying
+            navigator.clipboard.writeText(text);
+            event.preventDefault();
+            event.stopPropagation();
+      })
+    });
+</script>
+</body></html>
