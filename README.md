@@ -8,7 +8,9 @@
 - 关系图谱
 - 用户系统
 - 贡献审核
-
+## 环境
+- 使用uv
+- 运行环境：Python 
 ## 安装和运行
 
 1. 安装依赖：`pip install -r requirements.txt`
